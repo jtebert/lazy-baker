@@ -7,7 +7,7 @@ SECRET_KEY = env['SECRET_KEY']
 
 from .base import *
 
-DEBUG = False
+DEBUG = True
 
 try:
     from .local import *
