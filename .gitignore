@@ -5,3 +5,4 @@
 /static/
 /media/
 .env
+aws-credentials.csv
