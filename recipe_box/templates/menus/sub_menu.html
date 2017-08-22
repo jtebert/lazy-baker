@@ -1,15 +1,14 @@
 {% load menu_tags %}
 
 {% if menu_items %}
-    <!--{{ menu_items }}-->
 	{% for item in menu_items %}
         {% if item.has_children_in_menu %}
-            <span class="opener">{{ item.text }}</span>
+            <li><span class="opener">{{ item.text }}</span>
             <ul>
                 {% sub_menu item template=current_template %}
-            </ul>
+            </ul></li>
         {% else %}
-            <a href="{{ item.href }}">{{ item.text }}</a>
+            <li><a href="{{ item.href }}">{{ item.text }}</a></li>
         {% endif %}
 	{% endfor %}
 {% endif %}

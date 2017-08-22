@@ -17,11 +17,9 @@
                 <h2>Menu</h2>
             </header>
 
-            <ul class="nav navbar-nav">
+            <ul>
                 {% for item in menu_items %}
-                    <li>
-                        {% sub_menu item template="menus/sub_menu.html" %}
-                    </li>
+                    {% sub_menu item template="menus/sub_menu.html" %}
                 {% endfor %}
             </ul>
         </nav>
