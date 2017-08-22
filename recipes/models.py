@@ -138,28 +138,40 @@ class RecipePage(Page):
     parent_page_types = ["RecipeIndexPage",]
     subpage_types = []
 
+    # TODO: Add source, nutrition info, servings, cook/prep time
+
     main_image = models.ForeignKey(
         'images.CustomImage',
         null=True,
         on_delete=models.SET_NULL,
         related_name='+'
     )
-    date = models.DateField("Post date")
     intro = models.TextField(
         max_length=250,
         help_text='Appears above the recipe and on preview pages. '+md_format_help)
-    '''body = StreamField([
-        ('text', blocks.TextBlock(icon='pilcrow', help_text=md_format_help)),
-        ('image', CaptionedImageBlock()),
-        ('embed', EmbedBlock(icon='media')),
-        ('pull_quote', QuoteBlock()),
-    ])'''
+
+    prep_time = models.IntegerField(blank=True, null=True, verbose_name='Prep time (min.)')
+    cook_time = models.IntegerField(blank=True, null=True, verbose_name='Prep time (min.)')
+    servings = models.CharField(max_length=127, blank=True)
+    source_name = models.CharField(max_length=255, blank=True, verbose_name='Source')
+    source_url = models.URLField(blank=True)
 
     content_panels = Page.content_panels + [
-        FieldPanel('date'),
         ImageChooserPanel('main_image'),
         InlinePanel('recipe_categories', label='Categories'),
+
         FieldPanel('intro'),
+        FieldRowPanel([
+            FieldPanel('prep_time', classname='col3'),
+            FieldPanel('cook_time', classname='col3'),
+            FieldPanel('servings', classname='col3'),
+        ], classname='label-above'),
+
+        FieldRowPanel([
+            FieldPanel('source_name', classname='col6'),
+            FieldPanel('source_url', classname='col6')
+        ], classname='label-above'),
+
         InlinePanel('ingredients', label='Ingredients'),
         InlinePanel('instructions', label='Instructions'),
         #StreamFieldPanel('body'),
