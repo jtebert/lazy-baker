@@ -17,6 +17,7 @@ gunicorn==19.7.1
 html5lib==0.999999999
 idna==2.6
 libsass==0.13.2
+Markdown==2.6.9
 olefile==0.44
 Pillow==4.2.1
 psycopg2==2.7.3
@@ -29,5 +30,6 @@ static3==0.7.0
 Unidecode==0.4.21
 urllib3==1.22
 wagtail==1.12
+wagtailmenus==2.4
 webencodings==0.5.1
 Willow==0.4

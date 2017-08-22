@@ -1,4 +1,6 @@
-{% load static wagtailuserbar wagtailcore_tags %}
+{% load wagtailuserbar wagtailcore_tags %}
+{% load menu_tags %}
+{% load static from staticfiles %}
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -46,13 +48,22 @@
 
             <!-- Header -->
             <header id="header">
-                <a href="{% slugurl 'home' %}" class="logo"><strong>Editorial</strong> by HTML5 UP</a>
+                <a href="{% slugurl 'home' %}" class="logo"><strong>{{ settings.home.GeneralSettings.site_name }}</strong> by {{ settings.home.GeneralSettings.site_author }}</a>
                 <ul class="icons">
-                    <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-                    <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-                    <li><a href="#" class="icon fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
-                    <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-                    <li><a href="#" class="icon fa-medium"><span class="label">Medium</span></a></li>
+                    {% with settings.home.SocialMediaSettings as sm %}
+                        {% if sm.twitter_username %}
+                            <li><a href="https://twitter.com/{{ sm.twitter_username }}" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                        {% endif %}
+                        {% if sm.instagram_username %}
+                            <li><a href="/{{ instagram_username }}" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+                        {% endif %}
+                        {% if sm.github_username %}
+                            <li><a href="https://github.com/{{ sm.github_username }}" class="icon fa-github"><span class="label">Github</span></a></li>
+                        {% endif %}
+                        {% if sm.linkedin_url %}
+                            <li><a href="https://www.linkedin.com/in/{{ sm.linkedin_url }}" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
+                        {% endif %}
+                    {% endwith %}
                 </ul>
             </header>
 
@@ -62,100 +73,7 @@
     </div>
 
     <!-- Sidebar -->
-    <div id="sidebar">
-        <div class="inner">
-
-            <!-- Search -->
-            <section id="search" class="alt">
-                <form method="post" action="#">
-                    <input type="text" name="query" id="query" placeholder="Search"/>
-                </form>
-            </section>
-
-            <!-- Menu -->
-            <nav id="menu">
-                <header class="major">
-                    <h2>Menu</h2>
-                </header>
-                <ul>
-                    <li><a href="index.html">Homepage</a></li>
-                    <li><a href="generic.html">Generic</a></li>
-                    <li><a href="elements.html">Elements</a></li>
-                    <li>
-                        <span class="opener">Submenu</span>
-                        <ul>
-                            <li><a href="#">Lorem Dolor</a></li>
-                            <li><a href="#">Ipsum Adipiscing</a></li>
-                            <li><a href="#">Tempus Magna</a></li>
-                            <li><a href="#">Feugiat Veroeros</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Etiam Dolore</a></li>
-                    <li><a href="#">Adipiscing</a></li>
-                    <li>
-                        <span class="opener">Another Submenu</span>
-                        <ul>
-                            <li><a href="#">Lorem Dolor</a></li>
-                            <li><a href="#">Ipsum Adipiscing</a></li>
-                            <li><a href="#">Tempus Magna</a></li>
-                            <li><a href="#">Feugiat Veroeros</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Maximus Erat</a></li>
-                    <li><a href="#">Sapien Mauris</a></li>
-                    <li><a href="#">Amet Lacinia</a></li>
-                </ul>
-            </nav>
-
-            <!-- Section -->
-            <section>
-                <header class="major">
-                    <h2>Ante interdum</h2>
-                </header>
-                <div class="mini-posts">
-                    <article>
-                        <a href="#" class="image"><img src="images/pic07.jpg" alt=""/></a>
-                        <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
-                    </article>
-                    <article>
-                        <a href="#" class="image"><img src="images/pic08.jpg" alt=""/></a>
-                        <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
-                    </article>
-                    <article>
-                        <a href="#" class="image"><img src="images/pic09.jpg" alt=""/></a>
-                        <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore aliquam.</p>
-                    </article>
-                </div>
-                <ul class="actions">
-                    <li><a href="#" class="button">More</a></li>
-                </ul>
-            </section>
-
-            <!-- Section -->
-            <section>
-                <header class="major">
-                    <h2>Get in touch</h2>
-                </header>
-                <p>Sed varius enim lorem ullamcorper dolore aliquam aenean ornare velit lacus, ac varius enim lorem
-                    ullamcorper dolore. Proin sed aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus
-                    aliquam.</p>
-                <ul class="contact">
-                    <li class="fa-envelope-o"><a href="#">information@untitled.tld</a></li>
-                    <li class="fa-phone">(000) 000-0000</li>
-                    <li class="fa-home">1234 Somewhere Road #8254<br/>
-                        Nashville, TN 00000-0000
-                    </li>
-                </ul>
-            </section>
-
-            <!-- Footer -->
-            <footer id="footer">
-                <p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>.
-                    Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
-            </footer>
-
-        </div>
-    </div>
+    {% main_menu template="menus/main_menu.html" %}
 
 </div>
 
@@ -166,6 +84,21 @@
 <!--[if lte IE 8]><script src="{% static 'js/ie/respond.min.js' %}"></script><![endif]-->
 <script src="{% static 'js/main.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/recipe_box.js' %}"></script>
+
+{% with settings.home.GeneralSettings.google_analytics as google_analytics %}
+    {% if google_analytics %}
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', '{{ google_analytics }}', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+    {% endif %}
+{% endwith %}
 
 {% block extra_js %}
     {# Override this in templates to add extra javascript #}

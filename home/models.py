@@ -38,6 +38,10 @@ class GeneralSettings(BaseSetting):
     site_name = models.CharField(
         max_length=127,
         help_text='Website name')
+    site_author = models.CharField(
+        max_length=127,
+        blank=True,
+        help_text='Claim credit')
     '''favicon = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -66,18 +70,35 @@ class GeneralSettings(BaseSetting):
         max_length=127,
         blank=True, null=True,
         help_text='Google Analytics Tracking ID')
-    google_custom_search_key = models.CharField(
-        max_length=127,
-        blank=True, null=True,
-        help_text='Unique ID for Google Custom Search')
 
     panels = [
         FieldPanel('site_name'),
+        FieldPanel('site_author'),
         #ImageChooserPanel('favicon'),
         FieldPanel('site_tagline'),
         FieldPanel('site_description'),
         FieldPanel('pagination_count'),
         FieldPanel('disqus'),
         FieldPanel('google_analytics_id'),
-        FieldPanel('google_custom_search_key'),
     ]
+
+
+@register_setting(icon='group')
+class SocialMediaSettings(BaseSetting):
+    twitter_username = models.CharField(max_length=127, blank=True)
+    github_username = models.CharField(max_length=127, blank=True)
+    #facebook_url = models.CharField(max_length=127, blank=True, help_text='This is the part after the / on the address of your profile')
+    #snapchat_username = models.CharField(max_length=127, blank=True)
+    instagram_username = models.CharField(max_length=127, blank=True)
+    #medium_username = models.CharField(max_length=127, blank=True)
+    linkedin_url = models.CharField(max_length=127, blank=True, help_text='This is the part after the /in/ on the address of your profile')
+
+    panels = [
+        FieldPanel('github_username'),
+        FieldPanel('instagram_username'),
+        FieldPanel('linkedin_url'),
+        FieldPanel('twitter_username'),
+    ]
+
+    class Meta:
+        verbose_name = 'Social media accounts'
