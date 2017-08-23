@@ -27,11 +27,6 @@ class HomePage(Page):
     class Meta:
         verbose_name = "Homepage"
 
-    def latest_articles(self):
-        articles = RecipePage.objects.live()
-        articles = articles.order_by('-date')
-        return articles[0:5]
-
 
 @register_setting
 class GeneralSettings(BaseSetting):

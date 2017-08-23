@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load wagtailimages_tags %}
+{% load make_markdown create_page_range %}
+
+{% block content %}
+
+    <section>
+        <header class="main">
+            <h1>{{ page.title }}</h1>
+            {% if page.description %}
+                <p>{{ page.description|make_markdown }}</p>
+            {% endif %}
+        </header>
+
+
+        {% if recipes %}
+
+            <div class="posts">
+                {% for recipe in recipes %}
+                    <article>
+                        <a href="{{ recipe.url }}" class="image">
+                            {% image recipe.main_image fill-416x256 as tmp_photo %}
+                            <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}"/>
+                        </a>
+                        <h3>{{ recipe.title }}</h3>
+                        <p>{{ recipe.intro }}</p>
+                    </article>
+                {% endfor %}
+            </div>
+
+            <ul class="pagination">
+                {% if recipes and recipes.paginator.num_pages > 1 %}
+                    {% if recipes.has_previous %}
+                        <!--<li><a href="?page=1" class="button fa fa-angle-double-left"></a></li>-->
+                        <li><a href="?page={{ recipes.previous_page_number }}" class="button fa fa-angle-left"></a></li>
+                    {% else %}
+                        <li><span class="button disabled fa fa-angle-left"></span></li>
+                    {% endif %}
+
+                    {% create_page_range recipes.paginator.page_range recipes.number as page_range %}
+
+                    {% if 1 not in page_range %}
+                        <li><a href="?page=1" class="page">1</a></li>
+                    {% endif %}
+                    {% with page_range|first as first %}
+                        {% if first|add:"-1" > 1 %}
+                            <li>&hellip;</li>
+                        {% endif %}
+                    {% endwith %}
+                    {% for page in page_range %}
+                        {% if page == recipes.number %}
+                            <li><a href="#!" class="page active">{{ page }}</a></li>
+                        {% else %}
+                            <li><a href="?page={{ page }}" class="page">{{ page }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% with page_range|last as last %}
+                        {% if last|add:"1" < recipes.paginator.num_pages %}
+                            <li>&hellip;</li>
+                        {% endif %}
+                    {% endwith %}
+                    {% if recipes.paginator.num_pages not in page_range %}
+                        <li><a href="?page={{ recipes.paginator.num_pages }}" class="page">{{ recipes.paginator.num_pages }}</a></li>
+                    {% endif %}
+
+                    {% if recipes.has_next %}
+                        <li><a href="?page={{ recipes.next_page_number }}" class="button fa fa-angle-right"></a></li>
+                    {% else %}
+                        <li><span class="button disabled fa fa-angle-right"></span></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        {% else %}
+            <p style="text-align: center">No recipes... yet</p>
+        {% endif %}
+
+
+        {% comment %}
+        <div class="posts">
+            <article>
+                <a href="#" class="image"><img src="" alt=""/></a>
+                <h3>Amet varius aliquam</h3>
+                <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante
+                    interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
+                <ul class="actions">
+                    <li><a href="#" class="button">More</a></li>
+                </ul>
+            </article>
+        </div>
+        {% endcomment %}
+    </section>
+
+{% endblock %}

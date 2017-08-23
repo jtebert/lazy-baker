@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from modelcluster.fields import ParentalKey
 
 from wagtail.wagtailcore.models import Page, Orderable
+from wagtail.wagtailsearch import index
 from wagtail.wagtailcore.fields import StreamField
 from wagtail.wagtailcore import blocks
 from wagtail.wagtailembeds.blocks import EmbedBlock
@@ -33,15 +34,6 @@ class CaptionedImageBlock(blocks.StructBlock):
         label = 'Image'
 
 
-class QuoteBlock(blocks.StructBlock):
-    quote = blocks.TextBlock()
-    author = blocks.CharBlock()
-
-    class Meta:
-        icon = 'openquote'
-        template = 'blog/quote.html'
-
-
 class CategoryPage(Page):
     """
     Identifies the different categories to apply to recipes (can apply multiple to a recipe)
@@ -64,7 +56,43 @@ class CategoryPage(Page):
     class Meta:
         verbose_name = "Category"
 
-    # TODO: Write function to list all recipes in category
+    def get_context(self, request, *args, **kwargs):
+        """
+        Add recipes to the context for recipe category listings
+        """
+        context = super(CategoryPage, self).get_context(
+            request, *args, **kwargs)
+        recipes = self.get_recipes()
+
+        # Pagination
+        page = request.GET.get('page')
+        page_size = 10
+        from home.models import GeneralSettings
+        if GeneralSettings.for_site(request.site).pagination_count:
+            page_size = GeneralSettings.for_site(request.site).pagination_count
+
+        if page_size is not None:
+            paginator = Paginator(recipes, page_size)
+            try:
+                recipes = paginator.page(page)
+            except PageNotAnInteger:
+                recipes = paginator.page(1)
+            except EmptyPage:
+                recipes = paginator.page(paginator.num_pages)
+
+        context['recipes'] = recipes
+        return context
+
+    def get_recipes(self):
+        """
+        Return all recipes if no subject specified, otherwise only those from that Subject
+        :param subject_filter: Subject
+        :return: QuerySet of Recipes (I think)
+        """
+        recipes = RecipePage.objects.live()
+        recipes = recipes.filter(recipe_categories__category=self)
+        recipes = recipes.order_by('-post_date')
+        return recipes
 
 
 class CategoryGroupPage(Page):
@@ -80,7 +108,6 @@ class CategoryGroupPage(Page):
 
     # TODO: Write function to list all categories
     # TODO: Write funciton to list all recipes in category group
-
 
 
 class CategoryIndexPage(Page):
@@ -127,7 +154,7 @@ class Ingredient(Orderable):
 
 class Instruction(Orderable):
     page = ParentalKey('RecipePage', related_name='instructions')
-    instruction = models.TextField(verbose_name='')
+    instruction = models.TextField(verbose_name='', help_text=md_format_help)
 
     panels = [
         FieldPanel('instruction')
@@ -138,13 +165,16 @@ class RecipePage(Page):
     parent_page_types = ["RecipeIndexPage",]
     subpage_types = []
 
-    # TODO: Add source, nutrition info, servings, cook/prep time
+    # TODO: nutrition info
+
+    post_date = models.DateField(null=True)
 
     main_image = models.ForeignKey(
         'images.CustomImage',
         null=True,
         on_delete=models.SET_NULL,
-        related_name='+'
+        related_name='+',
+        help_text='Image should be at least 1280x416 px'
     )
     intro = models.TextField(
         max_length=250,
@@ -157,6 +187,7 @@ class RecipePage(Page):
     source_url = models.URLField(blank=True)
 
     content_panels = Page.content_panels + [
+        FieldPanel('post_date'),
         ImageChooserPanel('main_image'),
         InlinePanel('recipe_categories', label='Categories'),
 
@@ -174,36 +205,19 @@ class RecipePage(Page):
 
         InlinePanel('ingredients', label='Ingredients'),
         InlinePanel('instructions', label='Instructions'),
-        #StreamFieldPanel('body'),
     ]
+
+    '''search_fields = Page.search_fields + [
+        index.SearchField('intro'),
+        index.SearchField('ingredients'),
+        index.SearchField('instructions'),
+    ]'''
 
     class Meta:
         verbose_name = "Recipe"
 
     def __unicode__(self):
         return self.title
-
-    def subject(self):
-        # Find closest ancestor which is recipe index page
-        return self.get_ancestors().type(RecipeIndexPage).last()
-
-    """def subject(self):
-        # TODO: Replace/remove
-        subject = ArticleIndexPage.objects.ancestor_of(self).last().subject
-        if subject is not None:
-            return subject
-        else:
-            return ""
-    """
-
-    """
-    def all_subjects(self):
-        # TODO: Replace/remove
-        subjects = []
-        for s in SubjectPage.objects.all():
-            subjects.append(ArticleIndexPage.objects.filter(subject=s)[0])
-        return subjects
-    """
 
 
 class RecipeIndexPage(Page):
@@ -215,39 +229,3 @@ class RecipeIndexPage(Page):
 
     class Meta:
         verbose_name = 'Recipes Index'
-
-    def get_context(self, request, *args, **kwargs):
-        context = super(RecipeIndexPage, self).get_context(
-            request, *args, **kwargs)
-        recipes = self.recipes()
-
-        # Pagination
-        page = request.GET.get('page')
-        page_size = 10
-        from home.models import GeneralSettings
-        if GeneralSettings.for_site(request.site).pagination_count:
-            page_size = GeneralSettings.for_site(request.site).pagination_count
-
-        if page_size is not None:
-            paginator = Paginator(recipes, page_size)
-            try:
-                recipes = paginator.page(page)
-            except PageNotAnInteger:
-                recipes = paginator.page(1)
-            except EmptyPage:
-                recipes = paginator.page(paginator.num_pages)
-
-        context['recipes'] = recipes
-        return context
-
-    def recipes(self, subject_filter=None):
-        """
-        Return all recipes if no subject specified, otherwise only those from that Subject
-        :param subject_filter: Subject
-        :return: QuerySet of Recipes (I think)
-        """
-        recipes = RecipePage.objects.live().descendant_of(self)
-        if subject_filter is not None:
-            recipes = recipes.filter(Q(subject_1=subject_filter) | Q(subject_2=subject_filter))
-        recipes = recipes.order_by('-date')
-        return recipes

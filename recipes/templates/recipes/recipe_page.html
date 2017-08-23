@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load wagtailimages_tags %}
+{% load make_markdown %}
+
+{% block content %}
+
+    <section>
+        <header class="main">
+            <h1>{{ page.title }}</h1>
+            <p>{{ page.intro }}</p>
+        </header>
+
+        <span class="image main">
+            {% image self.main_image fill-1280x416 as tmp_photo %}
+            <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}"/>
+        </span>
+
+        <h2>Ingredients</h2>
+
+        <ul class="alt">
+            {% for ing in page.ingredients.all %}
+                <li><b>{{ ing.quantity }} {{ ing.unit }}</b> {{ ing.ingredient }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Instructions</h2>
+
+        <ol>
+            {% for instr in page.instructions.all %}
+                <li>{{ instr.instruction|make_markdown }}</li>
+            {% endfor %}
+        </ol>
+
+    </section>
+
+
+{% endblock %}
