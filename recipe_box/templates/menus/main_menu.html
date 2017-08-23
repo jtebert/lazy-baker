@@ -20,7 +20,7 @@
 
             <ul>
                 {% for item in menu_items %}
-                    {% sub_menu item template="menus/sub_menu.html" %}
+                    {% sub_menu item template="menus/sub_menu.html" use_specific=3 %}
                 {% endfor %}
             </ul>
         </nav>

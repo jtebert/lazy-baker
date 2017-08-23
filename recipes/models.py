@@ -46,7 +46,16 @@ class CategoryPage(Page):
         null=True, blank=True,
         help_text=md_format_help)
 
+    icon = models.ForeignKey(
+        'images.CustomImage',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='This should be a square line-based icon in the right color'
+    )
+
     content_panels = Page.content_panels + [
+        ImageChooserPanel('icon'),
         FieldPanel('description'),
     ]
 
@@ -140,7 +149,7 @@ class CategoryLink(Orderable):
 class Ingredient(Orderable):
     page = ParentalKey('RecipePage', related_name='ingredients')
     quantity = models.CharField(max_length=64)
-    unit = models.CharField(max_length=128)
+    unit = models.CharField(max_length=128, blank=True)
     ingredient = models.CharField(max_length=512)
 
     panels = [
@@ -181,7 +190,8 @@ class RecipePage(Page):
         help_text='Appears above the recipe and on preview pages. '+md_format_help)
 
     prep_time = models.IntegerField(blank=True, null=True, verbose_name='Prep time (min.)')
-    cook_time = models.IntegerField(blank=True, null=True, verbose_name='Prep time (min.)')
+    cook_time = models.IntegerField(blank=True, null=True, verbose_name='Cook time (min.)')
+    total_time = models.IntegerField(blank=True, null=True, verbose_name='Total time (min.)')
     servings = models.CharField(max_length=127, blank=True)
     source_name = models.CharField(max_length=255, blank=True, verbose_name='Source')
     source_url = models.URLField(blank=True)
@@ -195,6 +205,7 @@ class RecipePage(Page):
         FieldRowPanel([
             FieldPanel('prep_time', classname='col3'),
             FieldPanel('cook_time', classname='col3'),
+            FieldPanel('total_time', classname='col3'),
             FieldPanel('servings', classname='col3'),
         ], classname='label-above'),
 

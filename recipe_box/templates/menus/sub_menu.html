@@ -1,14 +1,17 @@
-{% load menu_tags %}
+{% load menu_tags wagtailimages_tags %}
 
 {% if menu_items %}
 	{% for item in menu_items %}
         {% if item.has_children_in_menu %}
             <li><span class="opener">{{ item.text }}</span>
             <ul>
-                {% sub_menu item template=current_template %}
+                {% sub_menu item template=current_template use_specific=3 %}
             </ul></li>
         {% else %}
-            <li><a href="{{ item.href }}">{{ item.text }}</a></li>
+            <li><a href="{{ item.href }}">
+                {{ item.text }}
+                {{ item.descripton }}
+            </a></li>
         {% endif %}
 	{% endfor %}
 {% endif %}
