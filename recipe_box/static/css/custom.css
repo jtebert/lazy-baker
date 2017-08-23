@@ -4,3 +4,10 @@ header #header-icon {
     width: 20%;
     max-width: 200px;
 }
+
+.menu-icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 24px;
+    //max-height: 24px;
+}

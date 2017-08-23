@@ -9,9 +9,11 @@
             </ul></li>
         {% else %}
             <li><a href="{{ item.href }}">
-                {{ item.text }}
-                {{ item.descripton }}
-            </a></li>
+                {% if item.icon %}
+                    {% image item.icon fill-64x64 as tmp_photo%}
+                    <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" class="menu-icon"/>
+                {% endif %}
+                {{ item.text }}</a></li>
         {% endif %}
 	{% endfor %}
 {% endif %}
