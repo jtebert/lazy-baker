@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load wagtailimages_tags %}
 
 {% block extra_css %}
 
@@ -10,126 +11,57 @@
 
     <!-- Banner -->
     <section id="banner">
-        <div class="content">
-            <header>
-                <h1>Hi, I’m Editorial<br/>
-                    by HTML5 UP</h1>
-                <p>A free and fully responsive site template</p>
-            </header>
-            <p>Aenean ornare velit lacus, ac varius enim ullamcorper eu. Proin aliquam facilisis ante interdum
-                congue. Integer mollis, nisl amet convallis, porttitor magna ullamcorper, amet egestas mauris.
-                Ut magna finibus nisi nec lacinia. Nam maximus erat id euismod egestas. Pellentesque sapien ac
-                quam. Lorem ipsum dolor sit nullam.</p>
-            <ul class="actions">
-                <li><a href="#" class="button big">Learn More</a></li>
-            </ul>
-        </div>
-        <span class="image object">
-            <img src="" alt=""/>
-        </span>
+        {% if self.featured_recipe %}
+            {% with self.featured_recipe as fr %}
+                <div class="content">
+                    <header>
+                        <h1>{{ fr.title }}</h1>
+                    </header>
+                    <p>{{ fr.intro }}</p>
+                    <ul class="actions">
+                        <li><a href="{{ fr.url }}" class="button big">See More</a></li>
+                    </ul>
+                </div>
+                <span class="image object">
+                    {% image fr.main_image fill-736x512 as tmp_photo %}
+                    <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" />
+                </span>
+            {% endwith %}
+        {% else %}
+            <div class="content">
+                {% with settings.home.GeneralSettings as gs %}
+                    <header>
+                        <h1>{{ gs.site_name }}</h1>
+                        {% if gs.site_tagline %}<p>{{ gs.site_tagline }}</p>{% endif %}
+                    </header>
+                    {% if gs.site_description %}<p>{{ gs.site_description }}</p>{% endif %}
+                {% endwith %}
+            </div>
+            <span class="image object">
+                <img src="" alt=""/>
+            </span>
+        {% endif %}
     </section>
+
+
+
 
     <!-- Section -->
     <section>
         <header class="major">
-            <h2>Erat lacinia</h2>
-        </header>
-        <div class="features">
-            <article>
-                <span class="icon fa-diamond"></span>
-                <div class="content">
-                    <h3>Portitor ullamcorper</h3>
-                    <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam
-                        facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-                </div>
-            </article>
-            <article>
-                <span class="icon fa-paper-plane"></span>
-                <div class="content">
-                    <h3>Sapien veroeros</h3>
-                    <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam
-                        facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-                </div>
-            </article>
-            <article>
-                <span class="icon fa-rocket"></span>
-                <div class="content">
-                    <h3>Quam lorem ipsum</h3>
-                    <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam
-                        facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-                </div>
-            </article>
-            <article>
-                <span class="icon fa-signal"></span>
-                <div class="content">
-                    <h3>Sed magna finibus</h3>
-                    <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam
-                        facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-                </div>
-            </article>
-        </div>
-    </section>
-
-    <!-- Section -->
-    <section>
-        <header class="major">
-            <h2>Ipsum sed dolor</h2>
+            <h2>Recent Recipes</h2>
         </header>
         <div class="posts">
-            <article>
-                <a href="#" class="image"><img src="" alt=""/></a>
-                <h3>Interdum aenean</h3>
-                <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis
-                    ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-                <ul class="actions">
-                    <li><a href="#" class="button">More</a></li>
-                </ul>
-            </article>
-            <article>
-                <a href="#" class="image"><img src="" alt=""/></a>
-                <h3>Nulla amet dolore</h3>
-                <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis
-                    ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-                <ul class="actions">
-                    <li><a href="#" class="button">More</a></li>
-                </ul>
-            </article>
-            <article>
-                <a href="#" class="image"><img src="" alt=""/></a>
-                <h3>Tempus ullamcorper</h3>
-                <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis
-                    ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-                <ul class="actions">
-                    <li><a href="#" class="button">More</a></li>
-                </ul>
-            </article>
-            <article>
-                <a href="#" class="image"><img src="" alt=""/></a>
-                <h3>Sed etiam facilis</h3>
-                <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis
-                    ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-                <ul class="actions">
-                    <li><a href="#" class="button">More</a></li>
-                </ul>
-            </article>
-            <article>
-                <a href="#" class="image"><img src="" alt=""/></a>
-                <h3>Feugiat lorem aenean</h3>
-                <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis
-                    ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-                <ul class="actions">
-                    <li><a href="#" class="button">More</a></li>
-                </ul>
-            </article>
-            <article>
-                <a href="#" class="image"><img src="" alt=""/></a>
-                <h3>Amet varius aliquam</h3>
-                <p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis
-                    ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-                <ul class="actions">
-                    <li><a href="#" class="button">More</a></li>
-                </ul>
-            </article>
+            {% for recipe in recent_recipes.all %}
+                <article>
+                    <a href="{{ recipe.url }}" class="image">
+                        {% image recipe.main_image fill-416x256 as tmp_photo %}
+                        <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}"/>
+                    </a>
+                    <h3><a href="{{ recipe.url }}">{{ recipe.title }}</a></h3>
+                    <p>{{ recipe.intro }}</p>
+                </article>
+            {% endfor %}
         </div>
     </section>
 

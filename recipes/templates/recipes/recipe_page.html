@@ -1,19 +1,54 @@
 {% extends 'base.html' %}
 {% load wagtailimages_tags %}
-{% load make_markdown %}
+{% load make_markdown time_to_text %}
+{% load static from staticfiles %}
 
 {% block content %}
 
     <section>
         <header class="main">
             <h1>{{ page.title }}</h1>
-            <p>{{ page.intro }}</p>
         </header>
 
         <span class="image main">
             {% image self.main_image fill-1280x416 as tmp_photo %}
             <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}"/>
         </span>
+
+        <p>{{ page.intro }}</p>
+
+        {% if self.source_name %}
+            <p>
+                <img src="{% static 'imgs/source.svg' %}" class="recipe-icon"/>
+                <b>Source:</b>
+                {% if self.source_url %}
+                    <a href="{{ self.source_url }}">{{ self.source_name }}</a>
+                {% else %}
+                    {{ self.source_name }}
+                {% endif %}
+            </p>
+        {% endif %}
+        <p>
+            {% if self.prep_time %}
+                <img src="{% static 'imgs/prep_time.svg' %}" class="recipe-icon"/>
+                <b>Prep Time:</b> {{ self.prep_time|time_to_text }}<br/>
+            {% endif %}
+            {% if self.cook_time %}
+                <img src="{% static 'imgs/cook_time.svg' %}" class="recipe-icon"/>
+                <b>Cook Time:</b> {{ self.cook_time|time_to_text }}<br/>
+            {% endif %}
+            {% if self.total_time %}
+                <img src="{% static 'imgs/total_time.svg' %}" class="recipe-icon"/>
+                <b>Total Time:</b> {{ self.total_time|time_to_text }}
+            {% endif %}
+        </p>
+
+        {% if self.recipe_yield %}
+            <p>
+                <img src="{% static 'imgs/recipe_yield.svg' %}" class="recipe-icon"/>
+                <b>Yield:</b> {{ self.recipe_yield }}
+            </p>
+        {% endif %}
 
         <h2>Ingredients</h2>
 

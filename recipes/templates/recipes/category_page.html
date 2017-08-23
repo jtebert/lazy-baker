@@ -26,7 +26,7 @@
                             {% image recipe.main_image fill-416x256 as tmp_photo %}
                             <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}"/>
                         </a>
-                        <h3>{{ recipe.title }}</h3>
+                        <h3><a href="{{ recipe.url }}">{{ recipe.title }}</a></h3>
                         <p>{{ recipe.intro }}</p>
                     </article>
                 {% endfor %}

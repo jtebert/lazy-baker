@@ -14,18 +14,30 @@ class HomePage(Page):
     parent_page_types = ['wagtailcore.Page']
 
     body = RichTextField(blank=True)
-    featured_article = models.ForeignKey(
+    num_recent_recipes = models.PositiveIntegerField(default=6)
+    featured_recipe = models.ForeignKey(
         RecipePage,
         null=True, blank=True,
         on_delete=models.SET_NULL)
 
     content_panels = Page.content_panels + [
         FieldPanel('body', classname="full"),
-        PageChooserPanel('featured_article'),
+        PageChooserPanel('featured_recipe'),
     ]
 
     class Meta:
         verbose_name = "Homepage"
+
+    def get_context(self, request, *args, **kwargs):
+        """
+        Add recipes to the context for recipe category listings
+        """
+        context = super(HomePage, self).get_context(
+            request, *args, **kwargs)
+        recent_recipes = RecipePage.objects.live().order_by('-post_date')[:self.num_recent_recipes]
+
+        context['recent_recipes'] = recent_recipes
+        return context
 
 
 @register_setting

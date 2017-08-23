@@ -195,7 +195,7 @@ class RecipePage(Page):
         null=True,
         on_delete=models.SET_NULL,
         related_name='+',
-        help_text='Image should be at least 1280x416 px'
+        help_text='Image should be at least 1280x512 px'
     )
     intro = models.TextField(
         max_length=250,
@@ -204,7 +204,7 @@ class RecipePage(Page):
     prep_time = models.IntegerField(blank=True, null=True, verbose_name='Prep time (min.)')
     cook_time = models.IntegerField(blank=True, null=True, verbose_name='Cook time (min.)')
     total_time = models.IntegerField(blank=True, null=True, verbose_name='Total time (min.)')
-    servings = models.CharField(max_length=127, blank=True)
+    recipe_yield = models.CharField(max_length=127, blank=True, verbose_name='Yield')
     source_name = models.CharField(max_length=255, blank=True, verbose_name='Source')
     source_url = models.URLField(blank=True)
 
@@ -218,7 +218,7 @@ class RecipePage(Page):
             FieldPanel('prep_time', classname='col3'),
             FieldPanel('cook_time', classname='col3'),
             FieldPanel('total_time', classname='col3'),
-            FieldPanel('servings', classname='col3'),
+            FieldPanel('recipe_yield', classname='col3'),
         ], classname='label-above'),
 
         FieldRowPanel([
