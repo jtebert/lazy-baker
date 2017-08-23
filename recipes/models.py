@@ -112,6 +112,18 @@ class CategoryGroupPage(Page):
     parent_page_types = ['CategoryIndexPage']
     subpage_types = [CategoryPage]
 
+    icon = models.ForeignKey(
+        'images.CustomImage',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='This should be a square line-based icon in the right color'
+    )
+
+    content_panels = Page.content_panels + [
+        ImageChooserPanel('icon'),
+    ]
+
     class Meta:
         verbose_name = "Category Group"
 
