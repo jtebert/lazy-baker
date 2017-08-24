@@ -5,22 +5,25 @@ header #header-icon {
     max-width: 200px;
 }
 
-.menu-icon {
+.category-icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 5%;
+    max-width: 48px;
+}
+h1 a {
+    border-bottom-style: none;
+}
+
+.menu-icon, .recipe-icon {
     display: inline-block;
     vertical-align: middle;
     width: 36px;
-    //max-height: 24px;
+    margin-right: 8px;
 }
 
 article h3 a {
     border-bottom-style: none;
-}
-
-.recipe-icon {
-    width: 36px;
-    margin-right: 8px;
-    display: inline-block;
-    vertical-align: middle;
 }
 
 .image .caption {
