@@ -21,3 +21,7 @@ article h3 a {
     display: inline-block;
     vertical-align: middle;
 }
+
+#menu ul a.opener:before, #menu ul span.opener:before {
+    //vertical-align: middle;
+}
