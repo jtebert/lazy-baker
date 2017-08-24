@@ -7,7 +7,6 @@ def format_ingredient_line(txt):
 
     txt_split = txt.split()
     first_is_number = False
-    second_is_unit = False
     if len(txt_split) == 0:
         # This is a blank line
         pass
@@ -34,6 +33,7 @@ def format_ingredient_line(txt):
         # Make number bold
         if first_is_number:
             txt_split[0] = '**' + txt_split[0] + '**'
+
         # TODO: Check if second value is a unit
 
         # Combine string back together

@@ -163,14 +163,6 @@ class CategoryLink(Orderable):
         PageChooserPanel('category')
     ]
 
-class Instruction(Orderable):
-    page = ParentalKey('RecipePage', related_name='instructions')
-    instruction = models.TextField(verbose_name='', help_text=md_format_help)
-
-    panels = [
-        FieldPanel('instruction')
-    ]
-
 
 class RecipePage(Page):
     parent_page_types = ["RecipeIndexPage",]
@@ -199,8 +191,9 @@ class RecipePage(Page):
     source_url = models.URLField(blank=True)
 
     ingredients = models.TextField(blank=True, help_text='One ingredient per line. Make separate sections with a square bracketed line like [section name]. '+md_format_help)
+    instructions = models.TextField(blank=True, help_text='Each new line generates a new numbered instruction. '+md_format_help)
 
-    notes = models.TextField(blank=True, help_text='Additional notes such as substitusions. '+md_format_help)
+    notes = models.TextField(blank=True, help_text='Additional notes such as substitutions. '+md_format_help)
 
     content_panels = Page.content_panels + [
         FieldPanel('post_date'),
@@ -222,7 +215,8 @@ class RecipePage(Page):
 
         FieldPanel('ingredients'),
         FieldPanel('notes'),
-        InlinePanel('instructions', label='Instructions'),
+        FieldPanel('instructions'),
+        #InlinePanel('instructions', label='Instructions'),
     ]
 
     def format_ingredients(self):
@@ -233,13 +227,21 @@ class RecipePage(Page):
         lines = [format_ingredient_line(line) for line in self.ingredients.splitlines()]
         return '\n'.join(lines)
 
+    def format_instructions(self):
+        """
+        Format the instructions string into a Markdown ordered list, which can be formatted with make_markdown in the template
+        :return:  String of Markdown-formatted instructions (ordered list)
+        """
+        lines = self.instructions.splitlines()
+        for ind, line in enumerate(lines):
+            if len(line) > 0 and not line.isspace():
+                lines[ind] = '{}. {}'.format(ind, line)
+        return '\n'.join(lines)
+
     search_fields = Page.search_fields + [
         index.SearchField('intro'),
         index.SearchField('ingredients'),
-        index.RelatedFields('instructions', [
-            index.SearchField('instruction'),
-        ])
-        #index.SearchField('instructions'),
+        index.SearchField('instructions')
     ]
 
     class Meta:
