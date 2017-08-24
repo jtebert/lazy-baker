@@ -1,19 +1,39 @@
 from __future__ import absolute_import, unicode_literals
 
+from modelcluster.fields import ParentalKey
+
 from django.db import models
 
-from wagtail.wagtailcore.models import Page
+from wagtail.wagtailcore.models import Page, Orderable
 from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, InlinePanel, PageChooserPanel, StreamFieldPanel, MultiFieldPanel
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, PageChooserPanel, InlinePanel
+from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.contrib.settings.models import BaseSetting, register_setting
 
 from recipes.models import RecipePage, CaptionedImageBlock
+
+md_format_help = 'This text will be formatted with markdown.'
+
+
+class HeaderIcon(Orderable):
+    page = ParentalKey('HomePage', related_name='header_icons')
+    icon = models.ForeignKey(
+        'images.CustomImage',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='This should be a square line-based icon in the right color'
+    )
+
+    panels = [
+        ImageChooserPanel('icon'),
+    ]
 
 
 class HomePage(Page):
     parent_page_types = ['wagtailcore.Page']
 
-    body = RichTextField(blank=True)
+    body = models.TextField(blank=True, help_text=md_format_help)
     num_recent_recipes = models.PositiveIntegerField(default=6)
     featured_recipe = models.ForeignKey(
         RecipePage,
@@ -22,6 +42,7 @@ class HomePage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('body', classname="full"),
+        InlinePanel('header_icons', label='Header Icons'),
         PageChooserPanel('featured_recipe'),
     ]
 
@@ -49,14 +70,13 @@ class GeneralSettings(BaseSetting):
         max_length=127,
         blank=True,
         help_text='Claim credit')
-    '''favicon = models.ForeignKey(
-        'wagtailimages.Image',
+    site_icon = models.ForeignKey(
+        'images.CustomImage',
         null=True,
-        blank=True,
         on_delete=models.SET_NULL,
         related_name='+',
-        help_text='Icon for site in browsers (Must be .ico file to work)',
-    )'''
+        help_text='This should be a square line-based icon in the right color'
+    )
     site_tagline = models.CharField(
         max_length=255,
         blank=True,
@@ -81,7 +101,7 @@ class GeneralSettings(BaseSetting):
     panels = [
         FieldPanel('site_name'),
         FieldPanel('site_author'),
-        #ImageChooserPanel('favicon'),
+        ImageChooserPanel('site_icon'),
         FieldPanel('site_tagline'),
         FieldPanel('site_description'),
         FieldPanel('pagination_count'),

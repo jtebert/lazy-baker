@@ -6,9 +6,18 @@
 
 {% endblock %}
 
-{% block body_class %}template-homepage{% endblock %}
-
 {% block content %}
+
+<section>
+    <div class="row 50% 9u 12u$(medium)">
+        {% for icon in self.header_icons.all %}
+            <div class="2u"><span class="image fit">
+                {% image icon.icon fill-256x256 as tmp_photo %}
+                <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" />
+            </span></div>
+        {% endfor %}
+</div>
+    </section>
 
     <!-- Banner -->
     <section id="banner">
@@ -64,7 +73,7 @@
                 </article>
             {% endfor %}
         </div>
-        <a class="button" href="{% slugurl 'recipes' %}">More Recipes</a>
+        <a class="button" href="{% slugurl 'recipes' %}">All Recipes</a>
     </section>
 
     {% comment %}<h1>Welcome to your new Wagtail site!</h1>

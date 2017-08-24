@@ -105,7 +105,7 @@ class CategoryPage(Page):
         """
         recipes = RecipePage.objects.live()
         recipes = recipes.filter(recipe_categories__category=self)
-        recipes = recipes.order_by('-post_date')
+        recipes = recipes.order_by('title')
         return recipes
 
 
@@ -295,5 +295,5 @@ class RecipeIndexPage(Page):
         :return: QuerySet of Recipes (I think)
         """
         recipes = RecipePage.objects.live()
-        recipes = recipes.order_by('-post_date')
+        recipes = recipes.order_by('title')
         return recipes
