@@ -1,3 +1,4 @@
+{% load wagtailcore_tags %}
 {% load menu_tags %}
 
 <!-- Sidebar -->
@@ -19,6 +20,7 @@
             </header>
 
             <ul>
+                <li><a href="{% slugurl 'recipes' %}">All Recipes</a></li>
                 {% for item in menu_items %}
                     {% sub_menu item template="menus/sub_menu.html" use_specific=3 %}
                 {% endfor %}

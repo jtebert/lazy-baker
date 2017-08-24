@@ -233,12 +233,14 @@ class RecipePage(Page):
         lines = [format_ingredient_line(line) for line in self.ingredients.splitlines()]
         return '\n'.join(lines)
 
-
-    '''search_fields = Page.search_fields + [
+    search_fields = Page.search_fields + [
         index.SearchField('intro'),
         index.SearchField('ingredients'),
-        index.SearchField('instructions'),
-    ]'''
+        index.RelatedFields('instructions', [
+            index.SearchField('instruction'),
+        ])
+        #index.SearchField('instructions'),
+    ]
 
     class Meta:
         verbose_name = "Recipe"
@@ -256,3 +258,40 @@ class RecipeIndexPage(Page):
 
     class Meta:
         verbose_name = 'Recipes Index'
+
+    def get_context(self, request, *args, **kwargs):
+        """
+        Add recipes to the context for recipe category listings
+        """
+        context = super(RecipeIndexPage, self).get_context(
+            request, *args, **kwargs)
+        recipes = self.get_recipes()
+
+        # Pagination
+        page = request.GET.get('page')
+        page_size = 10
+        from home.models import GeneralSettings
+        if GeneralSettings.for_site(request.site).pagination_count:
+            page_size = GeneralSettings.for_site(request.site).pagination_count
+
+        if page_size is not None:
+            paginator = Paginator(recipes, page_size)
+            try:
+                recipes = paginator.page(page)
+            except PageNotAnInteger:
+                recipes = paginator.page(1)
+            except EmptyPage:
+                recipes = paginator.page(paginator.num_pages)
+
+        context['recipes'] = recipes
+        return context
+
+    def get_recipes(self):
+        """
+        Return all recipes if no subject specified, otherwise only those from that Subject
+        :param subject_filter: Subject
+        :return: QuerySet of Recipes (I think)
+        """
+        recipes = RecipePage.objects.live()
+        recipes = recipes.order_by('-post_date')
+        return recipes

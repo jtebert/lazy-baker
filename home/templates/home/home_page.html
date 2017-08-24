@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% load wagtailimages_tags %}
+{% load wagtailimages_tags wagtailcore_tags %}
+{% load make_markdown %}
 
 {% block extra_css %}
 
@@ -17,7 +18,7 @@
                     <header>
                         <h1>{{ fr.title }}</h1>
                     </header>
-                    <p>{{ fr.intro }}</p>
+                    {{ fr.intro|make_markdown }}
                     <ul class="actions">
                         <li><a href="{{ fr.url }}" class="button big">See More</a></li>
                     </ul>
@@ -59,10 +60,11 @@
                         <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}"/>
                     </a>
                     <h3><a href="{{ recipe.url }}">{{ recipe.title }}</a></h3>
-                    <p>{{ recipe.intro }}</p>
+                    {{ recipe.intro|make_markdown }}
                 </article>
             {% endfor %}
         </div>
+        <a class="button" href="{% slugurl 'recipes' %}">More Recipes</a>
     </section>
 
     {% comment %}<h1>Welcome to your new Wagtail site!</h1>

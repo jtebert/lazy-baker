@@ -13,9 +13,22 @@
         <span class="image main">
             {% image self.main_image fill-1280x416 as tmp_photo %}
             <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}"/>
+            {% if self.main_image.source_name or self.main_image.source_url %}
+                <span class="caption">
+                    {% if self.main_image.source_name and self.main_image.source_url %}
+                        Source: <a href="{{ self.main_image.source_url }}">{{ self.main_image.source_name }}</a>
+                    {% elif self.main_image.source_name %}
+                        Source: {{ self.main_image.source_name }}
+                    {% else %}
+                        <a href="{{ self.main_image.source_url }}">Source</a>
+                    {% endif %}
+                </span>
+            {% endif %}
         </span>
 
-        <p>{{ page.intro }}</p>
+        {{ page.intro|make_markdown }}
+
+        <hr/>
 
         <div class="row 200%">
             <div class="6u 12u$(medium)">
@@ -38,20 +51,22 @@
                                 {% endif %}
                             </p>
                         {% endif %}
-                        <p>
-                            {% if self.prep_time %}
-                                <img src="{% static 'imgs/prep_time.png' %}" class="recipe-icon"/>
-                                <b>Prep Time:</b> {{ self.prep_time|duration }}<br/>
-                            {% endif %}
-                            {% if self.cook_time %}
-                                <img src="{% static 'imgs/cook_time.png' %}" class="recipe-icon"/>
-                                <b>Cook Time:</b> {{ self.cook_time|duration }}<br/>
-                            {% endif %}
-                            {% if self.total_time %}
-                                <img src="{% static 'imgs/total_time.png' %}" class="recipe-icon"/>
-                                <b>Total Time:</b> {{ self.total_time|duration }}
-                            {% endif %}
-                        </p>
+                        {% if sefl.prep_time or self.cook_time or self.total_time %}
+                            <p>
+                                {% if self.prep_time %}
+                                    <img src="{% static 'imgs/prep_time.png' %}" class="recipe-icon"/>
+                                    <b>Prep Time:</b> {{ self.prep_time|duration }}<br/>
+                                {% endif %}
+                                {% if self.cook_time %}
+                                    <img src="{% static 'imgs/cook_time.png' %}" class="recipe-icon"/>
+                                    <b>Cook Time:</b> {{ self.cook_time|duration }}<br/>
+                                {% endif %}
+                                {% if self.total_time %}
+                                    <img src="{% static 'imgs/total_time.png' %}" class="recipe-icon"/>
+                                    <b>Total Time:</b> {{ self.total_time|duration }}
+                                {% endif %}
+                            </p>
+                        {% endif %}
 
                         {% if self.recipe_yield %}
                             <p>

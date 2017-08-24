@@ -22,3 +22,7 @@ article h3 a {
     display: inline-block;
     vertical-align: middle;
 }
+
+.image .caption {
+    font-size: 0.8em;
+}

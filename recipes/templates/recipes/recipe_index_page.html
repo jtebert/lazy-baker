@@ -1,19 +1,12 @@
 {% extends 'base.html' %}
+
 {% load wagtailimages_tags %}
 {% load make_markdown create_page_range %}
 
 {% block content %}
-
     <section>
         <header class="main">
-            <h1 class="iconed">
-                {% image page.icon height-256 as tmp_photo %}
-                <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" id="header-icon"/>
-                {{ page }}
-            </h1>
-            {% if page.description %}
-                {{ page.description|make_markdown }}
-            {% endif %}
+            <h1>{{ page }}</h1>
         </header>
 
 
@@ -78,5 +71,4 @@
             <p style="text-align: center">No recipes... yet</p>
         {% endif %}
     </section>
-
 {% endblock %}
