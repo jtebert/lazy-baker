@@ -9,7 +9,7 @@
             <h1 class="iconed">
                 {% image page.icon height-256 as tmp_photo %}
                 <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" id="header-icon"/>
-                {{ page.title }}
+                {{ page }}
             </h1>
             {% if page.description %}
                 <p>{{ page.description|make_markdown }}</p>

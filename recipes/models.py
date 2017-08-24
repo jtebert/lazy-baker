@@ -19,6 +19,7 @@ from wagtail.wagtailadmin.edit_handlers import (FieldPanel,
                                                 InlinePanel,
                                                 PageChooserPanel,
                                                 StreamFieldPanel)
+from utils import format_ingredient_line
 
 md_format_help = 'This text will be formatted with markdown.'
 
@@ -60,7 +61,11 @@ class CategoryPage(Page):
     ]
 
     def __unicode__(self):
-        return self.title
+        parent_page = self.get_parent()
+        if parent_page.specific_class == CategoryGroupPage:
+            return str(parent_page) + ': ' + self.title
+        else:
+            return self.title
 
     class Meta:
         verbose_name = "Category"
@@ -158,21 +163,6 @@ class CategoryLink(Orderable):
         PageChooserPanel('category')
     ]
 
-class Ingredient(Orderable):
-    page = ParentalKey('RecipePage', related_name='ingredients')
-    quantity = models.CharField(max_length=64)
-    unit = models.CharField(max_length=128, blank=True)
-    ingredient = models.CharField(max_length=512)
-
-    panels = [
-        FieldRowPanel([
-            FieldPanel('quantity', classname='col3'),
-            FieldPanel('unit', classname='col3'),
-            FieldPanel('ingredient', classname='col6'),
-        ], classname="label-above")
-    ]
-
-
 class Instruction(Orderable):
     page = ParentalKey('RecipePage', related_name='instructions')
     instruction = models.TextField(verbose_name='', help_text=md_format_help)
@@ -201,12 +191,16 @@ class RecipePage(Page):
         max_length=250,
         help_text='Appears above the recipe and on preview pages. '+md_format_help)
 
-    prep_time = models.IntegerField(blank=True, null=True, verbose_name='Prep time (min.)')
-    cook_time = models.IntegerField(blank=True, null=True, verbose_name='Cook time (min.)')
-    total_time = models.IntegerField(blank=True, null=True, verbose_name='Total time (min.)')
+    prep_time = models.DurationField(blank=True, null=True)
+    cook_time = models.DurationField(blank=True, null=True)
+    total_time = models.DurationField(blank=True, null=True)
     recipe_yield = models.CharField(max_length=127, blank=True, verbose_name='Yield')
     source_name = models.CharField(max_length=255, blank=True, verbose_name='Source')
     source_url = models.URLField(blank=True)
+
+    ingredients = models.TextField(blank=True, help_text='One ingredient per line. Make separate sections with a square bracketed line like [section name]. '+md_format_help)
+
+    notes = models.TextField(blank=True, help_text='Additional notes such as substitusions. '+md_format_help)
 
     content_panels = Page.content_panels + [
         FieldPanel('post_date'),
@@ -226,9 +220,19 @@ class RecipePage(Page):
             FieldPanel('source_url', classname='col6')
         ], classname='label-above'),
 
-        InlinePanel('ingredients', label='Ingredients'),
+        FieldPanel('ingredients'),
+        FieldPanel('notes'),
         InlinePanel('instructions', label='Instructions'),
     ]
+
+    def format_ingredients(self):
+        """
+        Format the ingredients field into Markdown, which can be formatted with make_markdown in the template
+        :return: String of Markdown-formatted ingredients
+        """
+        lines = [format_ingredient_line(line) for line in self.ingredients.splitlines()]
+        return '\n'.join(lines)
+
 
     '''search_fields = Page.search_fields + [
         index.SearchField('intro'),

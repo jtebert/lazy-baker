@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load wagtailimages_tags %}
-{% load make_markdown time_to_text %}
+{% load make_markdown make_markdown_altlist duration %}
 {% load static from staticfiles %}
 
 {% block content %}
@@ -17,46 +17,53 @@
 
         <p>{{ page.intro }}</p>
 
-        {% if self.source_name %}
-            <p>
-                <img src="{% static 'imgs/source.svg' %}" class="recipe-icon"/>
-                <b>Source:</b>
-                {% if self.source_url %}
-                    <a href="{{ self.source_url }}">{{ self.source_name }}</a>
-                {% else %}
-                    {{ self.source_name }}
+        <div class="row 200%">
+            <div class="6u 12u$(medium)">
+                <h2>Ingredients</h2>
+                {{ self.format_ingredients|make_markdown_altlist }}
+            </div>
+            <div class="6u 12u$(medium)">
+                {% if self.source_name or self.source_url or self.prep_time or self.cook_time or self.total_time or self.recipe_yield %}
+                    <div class="box">
+                        {% if self.source_name or self.source_url %}
+                            <p>
+                                <img src="{% static 'imgs/source.png' %}" class="recipe-icon"/>
+                                <b>Source:</b>
+                                {% if self.source_url and self.source_name %}
+                                    <a href="{{ self.source_url }}">{{ self.source_name }}</a>
+                                {% elif self.source_name %}
+                                    {{ self.source_name }}
+                                {% elif self.source_url %}
+                                    <a href="{{ self.source_url }}">Source</a>
+                                {% endif %}
+                            </p>
+                        {% endif %}
+                        <p>
+                            {% if self.prep_time %}
+                                <img src="{% static 'imgs/prep_time.png' %}" class="recipe-icon"/>
+                                <b>Prep Time:</b> {{ self.prep_time|duration }}<br/>
+                            {% endif %}
+                            {% if self.cook_time %}
+                                <img src="{% static 'imgs/cook_time.png' %}" class="recipe-icon"/>
+                                <b>Cook Time:</b> {{ self.cook_time|duration }}<br/>
+                            {% endif %}
+                            {% if self.total_time %}
+                                <img src="{% static 'imgs/total_time.png' %}" class="recipe-icon"/>
+                                <b>Total Time:</b> {{ self.total_time|duration }}
+                            {% endif %}
+                        </p>
+
+                        {% if self.recipe_yield %}
+                            <p>
+                                <img src="{% static 'imgs/recipe_yield.png' %}" class="recipe-icon"/>
+                                <b>Yield:</b> {{ self.recipe_yield }}
+                            </p>
+                        {% endif %}
+                    </div>
                 {% endif %}
-            </p>
-        {% endif %}
-        <p>
-            {% if self.prep_time %}
-                <img src="{% static 'imgs/prep_time.svg' %}" class="recipe-icon"/>
-                <b>Prep Time:</b> {{ self.prep_time|time_to_text }}<br/>
-            {% endif %}
-            {% if self.cook_time %}
-                <img src="{% static 'imgs/cook_time.svg' %}" class="recipe-icon"/>
-                <b>Cook Time:</b> {{ self.cook_time|time_to_text }}<br/>
-            {% endif %}
-            {% if self.total_time %}
-                <img src="{% static 'imgs/total_time.svg' %}" class="recipe-icon"/>
-                <b>Total Time:</b> {{ self.total_time|time_to_text }}
-            {% endif %}
-        </p>
-
-        {% if self.recipe_yield %}
-            <p>
-                <img src="{% static 'imgs/recipe_yield.svg' %}" class="recipe-icon"/>
-                <b>Yield:</b> {{ self.recipe_yield }}
-            </p>
-        {% endif %}
-
-        <h2>Ingredients</h2>
-
-        <ul class="alt">
-            {% for ing in page.ingredients.all %}
-                <li><b>{{ ing.quantity }} {{ ing.unit }}</b> {{ ing.ingredient }}</li>
-            {% endfor %}
-        </ul>
+                <i>{{ page.notes|make_markdown }}</i>
+            </div>
+        </div>
 
         <h2>Instructions</h2>
 
