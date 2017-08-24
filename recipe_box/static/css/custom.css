@@ -6,10 +6,12 @@ header #header-icon {
 }
 
 .category-icon {
+    margin-left: 8px;
     display: inline-block;
     vertical-align: middle;
-    width: 5%;
-    max-width: 48px;
+    width: 8%;
+    min-width: 36px;
+    max-width: 56px;
 }
 h1 a {
     border-bottom-style: none;

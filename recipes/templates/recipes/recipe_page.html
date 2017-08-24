@@ -8,8 +8,8 @@
     <section>
         <header class="main">
             <h1>
-                {{ page.title }}<br/>
-                {% for cat in self.recipe_categories.all %}{% image cat.category.icon fill-48x48 as tmp_photo %}<a href="{{ cat.category.url }}"><img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" title="{{ cat.category }}" class="category-icon"/></a>{% endfor %}
+                {{ page.title }}
+                {% for cat in self.recipe_categories.all %}{% image cat.category.icon fill-56x56 as tmp_photo %}<a href="{{ cat.category.url }}"><img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" title="{{ cat.category }}" class="category-icon"/></a>{% endfor %}
             </h1>
         </header>
 
