@@ -86,6 +86,13 @@ class GeneralSettings(BaseSetting):
         blank=True,
         help_text='Description of website (to appear on searches)',
     )
+    recipe_icon = models.ForeignKey(
+        'images.CustomImage',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='This should be a square line-based icon in the right color'
+    )
     pagination_count = models.PositiveIntegerField(
         default=10,
         help_text="Number of posts to display per page on index pages")
@@ -104,6 +111,7 @@ class GeneralSettings(BaseSetting):
         ImageChooserPanel('site_icon'),
         FieldPanel('site_tagline'),
         FieldPanel('site_description'),
+        ImageChooserPanel('recipe_icon'),
         FieldPanel('pagination_count'),
         FieldPanel('disqus'),
         FieldPanel('google_analytics_id'),

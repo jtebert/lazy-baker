@@ -17,7 +17,7 @@
         <nav id="menu">
 
             <header class="major">
-                <h2>Recipes</h2>
+                <h2>Menu</h2>
             </header>
 
             <ul>
@@ -26,7 +26,11 @@
                     <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" class="menu-icon"/>
                     Home
                 </a></li>
-                <li><a href="{% slugurl 'recipes' %}">All Recipes</a></li>
+                <li><a href="{% slugurl 'recipes' %}">
+                    {% image settings.home.GeneralSettings.recipe_icon fill-36x36 as tmp_photo %}
+                    <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" class="menu-icon"/>
+                    All Recipes
+                </a></li>
                 {% for item in menu_items %}
                     {% sub_menu item template="menus/sub_menu.html" use_specific=3 %}
                 {% endfor %}
