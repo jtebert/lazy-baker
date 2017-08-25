@@ -79,8 +79,10 @@
                         {% endif %}
                     </div>
                 {% endif %}
-                <h2>Notes</h2>
-                <i>{{ page.notes|make_markdown }}</i>
+                {% if page.notes %}
+                    <h2>Notes</h2>
+                    <i>{{ page.notes|make_markdown }}</i>
+                {% endif %}
             </div>
         </div>
 
