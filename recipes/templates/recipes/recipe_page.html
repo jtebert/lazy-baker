@@ -85,13 +85,9 @@
 
         <h2>Instructions</h2>
 
-        {{ self.format_instructions|make_markdown }}
-
-        <ol>
-            {% for instr in page.instructions.all %}
-                <li>{{ instr.instruction|make_markdown }}</li>
-            {% endfor %}
-        </ol>
+        <div class="instructions">
+            {{ self.format_instructions|make_markdown }}
+        </div>
 
     </section>
 

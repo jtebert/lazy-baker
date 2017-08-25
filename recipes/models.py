@@ -236,12 +236,14 @@ class RecipePage(Page):
         for ind, line in enumerate(lines):
             if len(line) > 0 and not line.isspace():
                 lines[ind] = '{}. {}'.format(ind, line)
+        lines = [line for line in lines if len(line) > 0 and not line.isspace()]
         return '\n'.join(lines)
 
     search_fields = Page.search_fields + [
         index.SearchField('intro'),
         index.SearchField('ingredients'),
-        index.SearchField('instructions')
+        index.SearchField('instructions'),
+        index.SearchField('notes'),
     ]
 
     class Meta:

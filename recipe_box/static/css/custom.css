@@ -31,3 +31,7 @@ article h3 a {
 .image .caption {
     font-size: 0.8em;
 }
+
+div.instructions ol li {
+    margin-bottom: 1em;
+}
