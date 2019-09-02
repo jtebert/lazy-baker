@@ -4,10 +4,10 @@ from modelcluster.fields import ParentalKey
 
 from django.db import models
 
-from wagtail.wagtailcore.models import Page, Orderable
-from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, PageChooserPanel, InlinePanel
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
+from wagtail.core.models import Page, Orderable
+from wagtail.core.fields import RichTextField
+from wagtail.admin.edit_handlers import FieldPanel, PageChooserPanel, InlinePanel
+from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.contrib.settings.models import BaseSetting, register_setting
 
 from recipes.models import RecipePage, CaptionedImageBlock
@@ -126,7 +126,8 @@ class SocialMediaSettings(BaseSetting):
     #snapchat_username = models.CharField(max_length=127, blank=True)
     instagram_username = models.CharField(max_length=127, blank=True)
     #medium_username = models.CharField(max_length=127, blank=True)
-    linkedin_url = models.CharField(max_length=127, blank=True, help_text='This is the part after the /in/ on the address of your profile')
+    linkedin_url = models.CharField(max_length=127, blank=True,
+                                    help_text='This is the part after the /in/ on the address of your profile')
 
     panels = [
         FieldPanel('github_username'),

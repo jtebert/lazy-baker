@@ -2,7 +2,7 @@ import markdown
 
 from django import template
 from django.template.defaultfilters import stringfilter
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 
 register = template.Library()
@@ -16,7 +16,7 @@ def make_markdown_altlist(value):
                   'markdown.extensions.fenced_code',
                   'markdown.extensions.tables',
                   'markdown.extensions.codehilite']
-    x = markdown.markdown(force_unicode(value),
+    x = markdown.markdown(force_text(value),
                            extensions,
                            safe_mode=True,
                            enable_attributes=False)

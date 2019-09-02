@@ -2,11 +2,9 @@ from django import template
 
 register = template.Library()
 
-@register.assignment_tag(name='create_page_range')
+@register.simple_tag(name='create_page_range')
 def create_page_range(all_range, current_page):
-    """
-    Generate a range of up to 5 pages to show links to
-    """
+    """Generate a range of up to 5 pages to show links to"""
     last_page = all_range[-1]
     if len(all_range) <= 5:
         return all_range

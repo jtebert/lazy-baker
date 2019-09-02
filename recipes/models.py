@@ -7,19 +7,19 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from modelcluster.fields import ParentalKey
 
-from wagtail.wagtailcore.models import Page, Orderable
-from wagtail.wagtailsearch import index
-from wagtail.wagtailcore.fields import StreamField
-from wagtail.wagtailcore import blocks
-from wagtail.wagtailembeds.blocks import EmbedBlock
-from wagtail.wagtailimages.blocks import ImageChooserBlock
-from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
-from wagtail.wagtailadmin.edit_handlers import (FieldPanel,
+from wagtail.core.models import Page, Orderable
+from wagtail.search import index
+from wagtail.core.fields import StreamField
+from wagtail.core import blocks
+from wagtail.embeds.blocks import EmbedBlock
+from wagtail.images.blocks import ImageChooserBlock
+from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.admin.edit_handlers import (FieldPanel,
                                                 FieldRowPanel,
                                                 InlinePanel,
                                                 PageChooserPanel,
                                                 StreamFieldPanel)
-from utils import format_ingredient_line
+from .utils import format_ingredient_line
 
 md_format_help = 'This text will be formatted with markdown.'
 
@@ -157,7 +157,10 @@ class CategoryIndexPage(Page):
 
 class CategoryLink(Orderable):
     page = ParentalKey('RecipePage', related_name='recipe_categories')
-    category = models.ForeignKey(CategoryPage)
+    category = models.ForeignKey(
+        CategoryPage,
+        on_delete=models.SET_NULL,
+        null=True)
 
     panels = [
         PageChooserPanel('category')

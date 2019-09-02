@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
-import wagtail.wagtailcore.blocks
-import wagtail.wagtailcore.fields
-import wagtail.wagtailembeds.blocks
-import wagtail.wagtailimages.blocks
+import wagtail.core.blocks
+import wagtail.core.fields
+import wagtail.embeds.blocks
+import wagtail.images.blocks
 
 
 class Migration(migrations.Migration):
@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
             name='BlogIndexPage',
             fields=[
                 ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
-                ('intro', wagtail.wagtailcore.fields.RichTextField(blank=True)),
+                ('intro', wagtail.core.fields.RichTextField(blank=True)),
             ],
             options={
                 'abstract': False,
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
                 ('date', models.DateField(verbose_name='Post date')),
                 ('intro', models.TextField(help_text='This text will be formatted with markdown.', max_length=250)),
-                ('body', wagtail.wagtailcore.fields.StreamField([('text', wagtail.wagtailcore.blocks.TextBlock(help_text='This text will be formatted with markdown.', icon='pilcrow')), ('image', wagtail.wagtailcore.blocks.StructBlock([(b'image', wagtail.wagtailimages.blocks.ImageChooserBlock()), (b'caption', wagtail.wagtailcore.blocks.CharBlock(blank=True, help_text='This will override the default caption.This text will be formatted with markdown.', null=True, required=False))])), ('embed', wagtail.wagtailembeds.blocks.EmbedBlock(icon='media')), ('pull_quote', wagtail.wagtailcore.blocks.StructBlock([(b'quote', wagtail.wagtailcore.blocks.TextBlock()), (b'author', wagtail.wagtailcore.blocks.CharBlock())]))])),
+                ('body', wagtail.core.fields.StreamField([('text', wagtail.core.blocks.TextBlock(help_text='This text will be formatted with markdown.', icon='pilcrow')), ('image', wagtail.core.blocks.StructBlock([(b'image', wagtail.images.blocks.ImageChooserBlock()), (b'caption', wagtail.core.blocks.CharBlock(blank=True, help_text='This will override the default caption.This text will be formatted with markdown.', null=True, required=False))])), ('embed', wagtail.embeds.blocks.EmbedBlock(icon='media')), ('pull_quote', wagtail.core.blocks.StructBlock([(b'quote', wagtail.core.blocks.TextBlock()), (b'author', wagtail.core.blocks.CharBlock())]))])),
                 ('main_image', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='images.CustomImage')),
             ],
             options={

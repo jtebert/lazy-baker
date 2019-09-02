@@ -35,7 +35,8 @@ def format_ingredient_line(txt):
             pass
 
         if number_part:
-            number_part = re.sub(' - ', ur'\u2013', number_part)
+            number_part = number_part.replace(' - ', r'\u2013')
+            # number_part = re.sub(' - ', r'\u2013', number_part)
             number_part = '**' + number_part + '**'
         txt_split.insert(0, number_part)
 

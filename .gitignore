@@ -7,3 +7,5 @@
 /media/
 .env
 aws-credentials.csv
+*.dump
+.vscode/
