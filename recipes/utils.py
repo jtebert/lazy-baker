@@ -1,5 +1,6 @@
 import re
 
+
 def format_ingredient_line(txt):
     '''
     Formats a single line of an ingredients list into Markdown for putting on the page
@@ -11,7 +12,7 @@ def format_ingredient_line(txt):
     if len(txt_split) == 0:
         # This is a blank line
         pass
-    elif len(txt) >= 2 and txt[0] == '[' and txt[-1] ==']':
+    elif len(txt) >= 2 and txt[0] == '[' and txt[-1] == ']':
         # This is a section marker
         txt = '### ' + txt[1:-1]
     else:
@@ -35,8 +36,7 @@ def format_ingredient_line(txt):
             pass
 
         if number_part:
-            number_part = number_part.replace(' - ', r'\u2013')
-            # number_part = re.sub(' - ', r'\u2013', number_part)
+            number_part = number_part.replace(' - ', '\u2013')
             number_part = '**' + number_part + '**'
         txt_split.insert(0, number_part)
 
@@ -45,6 +45,7 @@ def format_ingredient_line(txt):
         # Combine string back together
         txt = '- ' + (' ').join(txt_split)
     return txt
+
 
 def is_number(str):
     """
