@@ -36,9 +36,9 @@
                 {% if recipes and recipes.paginator.num_pages > 1 %}
                     {% if recipes.has_previous %}
                         <!--<li><a href="?page=1" class="button fa fa-angle-double-left"></a></li>-->
-                        <li><a href="?page={{ recipes.previous_page_number }}" class="button fa fa-angle-left"></a></li>
+                        <li><a href="?page={{ recipes.previous_page_number }}" class="button mdi mdi-arrow-left mdi-18px"></a></li>
                     {% else %}
-                        <li><span class="button disabled fa fa-angle-left"></span></li>
+                        <li><span class="button disabled mdi mdi-arrow-left mdi-18px"></span></li>
                     {% endif %}
 
                     {% create_page_range recipes.paginator.page_range recipes.number as page_range %}
@@ -68,9 +68,9 @@
                     {% endif %}
 
                     {% if recipes.has_next %}
-                        <li><a href="?page={{ recipes.next_page_number }}" class="button fa fa-angle-right"></a></li>
+                        <li><a href="?page={{ recipes.next_page_number }}" class="button mdi mdi-arrow-right mdi-18px"></a></li>
                     {% else %}
-                        <li><span class="button disabled fa fa-angle-right"></span></li>
+                        <li><span class="button disabled mdi mdi-arrow-right mdi-18px"></span></li>
                     {% endif %}
                 {% endif %}
             </ul>
