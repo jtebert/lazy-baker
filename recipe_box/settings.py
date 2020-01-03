@@ -18,8 +18,11 @@ import os
 from decouple import config
 from decouple import Csv
 
-PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
+
+print("project:", PROJECT_DIR)
+print("base:", BASE_DIR)
 
 PRODUCTION = config('PRODUCTION', cast=bool, default=False)
 
@@ -121,13 +124,17 @@ if PRODUCTION:
             'PASSWORD': config('DB_PASSWORD'),
             'HOST': 'localhost',
             'PORT': '',
-            # 'ENGINE': 'django.db.backends.sqlite3',
-            # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
     # Honor the 'X-Forwarded-Proto' header for request.is_secure()
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': config('DB_NAME'),
+        }
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
