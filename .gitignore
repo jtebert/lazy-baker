@@ -9,3 +9,4 @@
 aws-credentials.csv
 *.dump
 .vscode/
+**/*.ini
