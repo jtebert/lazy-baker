@@ -1,0 +1,17 @@
+{% load wagtailimages_tags make_markdown %}
+
+<span class="image left">
+    {% image self.image width-1000 as tmp_photo %}
+    <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}"/>
+    {% if self.image.source_name or self.image.source_url %}
+        <span class="caption">
+            {% if self.image.source_name and self.image.source_url %}
+                Source: <a href="{{ self.image.source_url }}">{{ self.image.source_name }}</a>
+            {% elif self.image.source_name %}
+                Source: {{ self.image.source_name }}
+            {% else %}
+                <a href="{{ self.image.source_url }}">Source</a>
+            {% endif %}
+        </span>
+    {% endif %}
+</span>

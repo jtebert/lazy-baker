@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% load wagtailimages_tags %}
+{% load static from staticfiles %}
+
+{% block content %}
+
+<section>
+    <header class="main">
+        <h1>{{ self.title }}</h1>
+    </header>
+
+    {{ self.body }}
+
+</section>
+
+{% endblock %}

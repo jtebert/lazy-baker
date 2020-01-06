@@ -6,7 +6,7 @@
             <li>
                 <span class="opener">
                     {% if item.icon %}
-                        {% image item.icon fill-72x72 as tmp_photo %}
+                        {% image item.icon fill-128x128 as tmp_photo %}
                         <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" class="menu-icon"/>
                     {% endif %}
                     {{ item.text }}
@@ -17,7 +17,7 @@
         {% else %}
             <li><a href="{{ item.href }}">
                 {% if item.icon %}
-                    {% image item.icon fill-72x72 as tmp_photo%}
+                    {% image item.icon fill-128x128 as tmp_photo%}
                     <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" class="menu-icon"/>
                 {% endif %}
                 {{ item.text }}</a></li>

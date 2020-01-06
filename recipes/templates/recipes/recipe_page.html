@@ -8,13 +8,17 @@
     <section>
         <header class="main">
             <h1>
+                {% for cat in self.recipe_categories.all|dictsort:"category.title" %}<!--
+                    -->{% image cat.category.icon fill-128x128 as tmp_photo %}<!--
+                    --><a href="{{ cat.category.url }}"><img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" title="{{ cat.category }}" class="category-icon"/></a><!--
+                -->{% endfor %}<br>
+
                 {{ page.title }}
-                {% for cat in self.recipe_categories.all %}{% image cat.category.icon fill-56x56 as tmp_photo %}<a href="{{ cat.category.url }}"><img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" title="{{ cat.category }}" class="category-icon"/></a>{% endfor %}
             </h1>
         </header>
 
         <span class="image main">
-            {% image self.main_image fill-1280x416 as tmp_photo %}
+            {% image self.main_image fill-1920x768 as tmp_photo %}
             <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}"/>
             {% if self.main_image.source_name or self.main_image.source_url %}
                 <span class="caption">

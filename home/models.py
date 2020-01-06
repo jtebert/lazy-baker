@@ -4,15 +4,24 @@ from modelcluster.fields import ParentalKey
 
 from django.db import models
 
+from wagtail.core import blocks
 from wagtail.core.models import Page, Orderable
-from wagtail.core.fields import RichTextField
-from wagtail.admin.edit_handlers import FieldPanel, PageChooserPanel, InlinePanel
+from wagtail.core.fields import StreamField
+from wagtail.admin.edit_handlers import FieldPanel, PageChooserPanel, InlinePanel, StreamFieldPanel
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.contrib.settings.models import BaseSetting, register_setting
 
 from recipes.models import RecipePage, CaptionedImageBlock
 
 md_format_help = 'This text will be formatted with markdown.'
+DEFAULT_RICHTEXT_FEATURES = [
+    'h2', 'h3', 'h4', 'h5',
+    'bold', 'italic', 'strikethrough', 'code',
+    'ol', 'ul',
+    'hr',
+    'link',
+    'document-link',
+]
 
 
 class HeaderIcon(Orderable):
@@ -31,6 +40,11 @@ class HeaderIcon(Orderable):
 
 
 class HomePage(Page):
+    """
+    Home landing page for the entire site.
+
+    This shows a featured recipe and a list of the most recently posted recipes.
+    """
     parent_page_types = ['wagtailcore.Page']
 
     body = models.TextField(blank=True, help_text=md_format_help)
@@ -61,6 +75,24 @@ class HomePage(Page):
         return context
 
 
+class AboutPage(Page):
+    """
+    An accessory page that can be added to show general information about the site.
+    """
+
+    parent_page_types = ['HomePage']
+    subpage_types = []
+
+    body = StreamField([
+        ('text', blocks.RichTextBlock(features=DEFAULT_RICHTEXT_FEATURES)),
+        ('captioned_image', CaptionedImageBlock())
+    ])
+
+    content_panels = Page.content_panels + [
+        StreamFieldPanel('body'),
+    ]
+
+
 @register_setting
 class GeneralSettings(BaseSetting):
     site_name = models.CharField(
@@ -85,6 +117,10 @@ class GeneralSettings(BaseSetting):
     site_description = models.TextField(
         blank=True,
         help_text='Description of website (to appear on searches)',
+    )
+    contact_email = models.EmailField(
+        blank=True,
+        help_text='Publically displayed contact information'
     )
     recipe_icon = models.ForeignKey(
         'images.CustomImage',
@@ -111,6 +147,7 @@ class GeneralSettings(BaseSetting):
         ImageChooserPanel('site_icon'),
         FieldPanel('site_tagline'),
         FieldPanel('site_description'),
+        FieldPanel('contact_email'),
         ImageChooserPanel('recipe_icon'),
         FieldPanel('pagination_count'),
         FieldPanel('disqus'),

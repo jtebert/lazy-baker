@@ -31,7 +31,7 @@ class CaptionedImageBlock(blocks.StructBlock):
 
     class Meta:
         icon = 'image'
-        template = 'blog/captioned_image_block.html'
+        template = 'captioned_image_block.html'
         label = 'Image'
 
 
@@ -69,6 +69,7 @@ class CategoryPage(Page):
 
     class Meta:
         verbose_name = "Category"
+        ordering = ['title']
 
     def get_context(self, request, *args, **kwargs):
         """
@@ -180,7 +181,7 @@ class RecipePage(Page):
         null=True,
         on_delete=models.SET_NULL,
         related_name='+',
-        help_text='Image should be at least 1280x512 px'
+        help_text='Image should be at least 1920x768 px'
     )
     intro = models.TextField(
         max_length=250,

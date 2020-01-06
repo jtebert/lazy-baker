@@ -22,12 +22,12 @@
 
             <ul>
                 <li><a href="{% slugurl 'home' %}">
-                    {% image settings.home.GeneralSettings.site_icon fill-72x72 as tmp_photo %}
+                    {% image settings.home.GeneralSettings.site_icon fill-128x128 as tmp_photo %}
                     <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" class="menu-icon"/>
                     Home
                 </a></li>
                 <li><a href="{% slugurl 'recipes' %}">
-                    {% image settings.home.GeneralSettings.recipe_icon fill-72x72 as tmp_photo %}
+                    {% image settings.home.GeneralSettings.recipe_icon fill-128x128 as tmp_photo %}
                     <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" class="menu-icon"/>
                     All Recipes
                 </a></li>
@@ -36,6 +36,20 @@
                 {% endfor %}
             </ul>
         </nav>
+
+        <section>
+            <header class="major">
+                <h2>More Info</h2>
+            </header>
+            <p>{{ settings.home.GeneralSettings.site_description }}</p>
+            <ul class="contact">
+                {% if settings.home.GeneralSettings.contact_email %}
+                <li class="icon solid fa-envelope-o"><a href="mailto:{{ settings.home.GeneralSettings.contact_email }}">{{ settings.home.GeneralSettings.contact_email }}</a></li>
+                {% endif %}
+
+                <li class="icon solid fa-info"><a href="/about">About {{settings.home.GeneralSettings.site_name }}</a></li>
+            </ul>
+        </section>
 
         <!-- Footer -->
         <footer id="footer">

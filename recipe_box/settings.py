@@ -21,9 +21,6 @@ from decouple import Csv
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
-print("project:", PROJECT_DIR)
-print("base:", BASE_DIR)
-
 PRODUCTION = config('PRODUCTION', cast=bool, default=False)
 
 DEBUG = config('DEBUG', cast=bool)
