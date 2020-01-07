@@ -168,18 +168,18 @@ MEDIA_URL = '/media/'
 
 # Wagtail settings
 
-WAGTAIL_SITE_NAME = "The Lazy Baker"
+WAGTAIL_SITE_NAME = "Reckless Ham"
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
-BASE_URL = 'http://lazybaker.herokuapp.com'
+BASE_URL = 'http://recklessham.com'
 
 WAGTAILIMAGES_IMAGE_MODEL = 'images.CustomImage'
 
 
 # STATIC FILES ON AWS
 
-AWS_STORAGE_BUCKET_NAME = 'lazybaker'
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 # env = os.environ.copy()
 
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')

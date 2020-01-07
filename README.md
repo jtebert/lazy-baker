@@ -1,6 +1,6 @@
-# Lazy Baker
+# Reckless Ham (formerly Lazy Baker)
 
-[lazybaker.juliaebert.com](http://lazybaker.juliaebert.com)
+[recklessham.com](http://recklessham.com)
 
 ---
 
