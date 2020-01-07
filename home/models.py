@@ -24,21 +24,6 @@ DEFAULT_RICHTEXT_FEATURES = [
 ]
 
 
-class HeaderIcon(Orderable):
-    page = ParentalKey('HomePage', related_name='header_icons')
-    icon = models.ForeignKey(
-        'images.CustomImage',
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        help_text='This should be a square line-based icon in the right color'
-    )
-
-    panels = [
-        ImageChooserPanel('icon'),
-    ]
-
-
 class HomePage(Page):
     """
     Home landing page for the entire site.
@@ -48,6 +33,11 @@ class HomePage(Page):
     parent_page_types = ['wagtailcore.Page']
 
     body = models.TextField(blank=True, help_text=md_format_help)
+    logo = models.ForeignKey(
+        'images.CustomImage',
+        null=True,
+        on_delete=models.SET_NULL
+    )
     num_recent_recipes = models.PositiveIntegerField(default=6)
     featured_recipe = models.ForeignKey(
         RecipePage,
@@ -56,7 +46,7 @@ class HomePage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('body', classname="full"),
-        InlinePanel('header_icons', label='Header Icons'),
+        ImageChooserPanel('logo'),
         PageChooserPanel('featured_recipe'),
     ]
 

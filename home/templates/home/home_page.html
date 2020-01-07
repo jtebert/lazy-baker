@@ -8,15 +8,13 @@
 
 {% block content %}
 
-<section>
-    <div class="row 50% 9u 12u$(medium)">
-        {% for icon in self.header_icons.all %}
-            <div class="2u"><span class="image fit">
-                {% image icon.icon fill-256x256 as tmp_photo %}
-                <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" />
-            </span></div>
-        {% endfor %}
-</div>
+    <section id="logo">
+        <div class="row 12u">
+                <span class="image fit">
+                    {% image self.logo width-1920 as tmp_photo %}
+                    <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" />
+                </span>
+        </div>
     </section>
 
     <!-- Banner -->
@@ -33,7 +31,7 @@
                     </ul>
                 </div>
                 <span class="image object">
-                    {% image fr.main_image fill-736x512 as tmp_photo %}
+                    {% image fr.main_image fill-1104x768 as tmp_photo %}
                     <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" />
                 </span>
             {% endwith %}

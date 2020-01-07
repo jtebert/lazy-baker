@@ -1,8 +1,21 @@
-header #header-icon {
-    display: inline-block;
-    vertical-align: middle;
-    width: 20%;
-    max-width: 200px;
+#main > .inner > section#logo {
+    padding-top: 3em;
+    padding-bottom: 1em;
+    border-bottom: none;
+}
+
+#main > .inner > section#banner {
+    border-top: none;
+    padding-top: 1em;
+}
+
+#main > .inner > section#recipe {
+padding-top: 4em;
+}
+
+.recipe-categories a {
+    text-decoration: none;
+    border: none;
 }
 
 .category-icon {

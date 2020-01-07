@@ -14,14 +14,30 @@ Activate virtual environment: `source venv/bin/activate`
 
 Install dependencies: `pip3 install -r requirements.txt`
 
-Create a `.env` file with the following:
+Create a `.env` or `settings.ini` file with the following:
 ```shell
-DJANGO_SETTINGS_MODULE=recipe_box.settings.production
-SECRET_KEY='XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx'
-AWS_ACCESS_KEY_ID='XXXXXXXXXXXXXXXX'
-AWS_SECRET_ACCESS_KEY='XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+[settings]
+DEBUG=True
+PRODUCTION=False
+SECRET_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+AWS_ACCESS_KEY_ID=XXXXXXXXXXXXXXXX
+AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+ALLOWED_HOSTS=*
+DB_NAME=recipe_box_db
 ```
-and switching between `recipe_box.settings.production` and `recipe_box.settings.dev` as needed.
+
+- `DEBUG` (True or False) sets the Django debug variable. Do not use `DEBUG=True` in production.
+- `PROUDCTION` determines whether the production static/media content (AWS vs local) is used, and whether to use production database settings.
+- `SECRET_KEY` is the Django secret key
+- `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are the credentials for hosting static/media data on AWS S3
+- `ALLOWED_HOSTS` is the allowed host for the site to appear on. It shouldn't *really* be `*` (any host).
+- `DB_NAME` is the database name in Postgres.
+
+The following parameters are required if you are in a production setting (otherwise, they'll be ignored):
+```shell
+DB_USER=XXXXXXXXXXX
+DB_PASSWORD=XXXXXXXXXX
+```
 
 Create/update the database: `python3 manage.py migrate`
 
