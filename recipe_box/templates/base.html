@@ -81,11 +81,13 @@
 
 {# Global javascript #}
 <script src="{% static 'js/jquery.min.js' %}"></script>
-<script src="{% static 'js/skel.min.js' %}"></script>
+<script src="{% static 'js/breakpoints.min.js' %}"></script>
+<script src="{% static 'js/browser.min.js' %}"></script>
+{% comment %} <script src="{% static 'js/skel.min.js' %}"></script> {% endcomment %}
 <script src="{% static 'js/util.js' %}"></script>
 <!--[if lte IE 8]><script src="{% static 'js/ie/respond.min.js' %}"></script><![endif]-->
 <script src="{% static 'js/main.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/recipe_box.js' %}"></script>
+{% comment %} <script type="text/javascript" src="{% static 'js/recipe_box.js' %}"></script> {% endcomment %}
 
 {% with settings.home.GeneralSettings.google_analytics as google_analytics %}
     {% if google_analytics %}

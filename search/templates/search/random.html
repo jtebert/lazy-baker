@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+{% load make_markdown %}
+
+{% block content %}
+
+    <section id="random" class="alt">
+        <div class="row v-center">
+            <div class="col-2 col-4-small">
+                {% image settings.home.GeneralSettings.random_recipe_icon height-256 as tmp_photo %}
+                <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" id="header-icon"/>
+            </div>
+            <div class="col-10 col-12-small">
+                <h1>Random Recipe</h1>
+            </div>
+        </div>
+        {% comment %} <h1 class="iconed">
+            {% image settings.home.GeneralSettings.random_recipe_icon height-256 as tmp_photo %}
+            <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" id="header-icon"/>
+            Random Recipe
+        </h1> {% endcomment %}
+    </section>
+
+    {% comment %} <div class="row"> {% endcomment %}
+        <p><a href="" class="button big">Pick Again</a></p>
+    {% comment %} </div> {% endcomment %}
+
+    {% with random_recipe as fr %}
+        <div class="row">
+            <div class="col-4 col-12-medium">
+                <span class="image fit">
+                    {% image fr.main_image fill-1104x768 as tmp_photo %}
+                    <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" />
+                </span>
+            </div>
+            <div class="col-8 col-12-medium">
+                <header>
+                    <h2>{{ fr.title }}</h2>
+                </header>
+                {{ fr.intro|make_markdown }}
+                <ul class="actions">
+                    <li><a href="{{ fr.url }}" class="button">Read Recipe</a></li>
+                </ul>
+            </div>
+        </div>
+    {% endwith %}
+
+{% endblock %}

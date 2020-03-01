@@ -31,6 +31,11 @@
                     <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" class="menu-icon"/>
                     All Recipes
                 </a></li>
+                <li><a href="{% url 'random' %}">
+                    {% image settings.home.GeneralSettings.random_recipe_icon fill-128x128 as tmp_photo %}
+                    <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" class="menu-icon"/>
+                    Random Recipe
+                </a></li>
                 {% for item in menu_items %}
                     {% sub_menu item template="menus/sub_menu.html" use_specific=3 %}
                 {% endfor %}

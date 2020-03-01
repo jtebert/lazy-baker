@@ -7,6 +7,7 @@ from wagtail.core.models import Page
 from wagtail.search.models import Query
 
 from recipes.models import RecipePage
+from home.models import GeneralSettings
 
 
 def search(request):
@@ -35,4 +36,24 @@ def search(request):
     return render(request, 'search/search.html', {
         'search_query': search_query,
         'search_results': search_results,
+    })
+
+
+def random(request):
+    """
+    Get a random recipe to make for dinner
+    """
+    # Get a random recipe
+    random_recipe_category = GeneralSettings.for_site(request.site).random_recipe_category
+    print('CAT:', random_recipe_category)
+    if random_recipe_category:
+        # Get from a specific category, if one set in settings
+        random_recipe = random_recipe_category.get_recipes().order_by('?').first()
+    else:
+        # Otherwise, pick any random recipe (any category)
+        random_recipe = RecipePage.objects.live().order_by('?').first()
+    print('RECIPE', random_recipe)
+
+    return render(request, 'search/random.html', {
+        'random_recipe': random_recipe,
     })

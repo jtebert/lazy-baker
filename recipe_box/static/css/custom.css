@@ -29,6 +29,12 @@ padding-top: 4em;
 h1 a {
     border-bottom-style: none;
 }
+#header-icon {
+    width: 100%;
+}
+.v-center h1 {
+    vertical-align: middle;
+}
 
 .menu-icon, .recipe-icon {
     display: inline-block;

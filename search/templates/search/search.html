@@ -7,7 +7,7 @@
         <h1>Search</h1>
         <form action="{% url 'search' %}" method="get">
             <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %} placeholder="Search">
-            <!--<input type="submit" value="Search" class="button">-->
+            {% comment %} <input type="submit" value="Search" class="button"> {% endcomment %}
         </form>
 
         {% if search_results %}

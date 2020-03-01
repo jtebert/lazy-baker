@@ -6,11 +6,21 @@
 
     <section>
         <header class="main">
-            <h1 class="iconed">
+            <div class="row">
+                <div class="col-2 col-4-small">
+                {% image page.icon height-256 as tmp_photo %}
+                <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" id="header-icon"/>
+                </div>
+                <div class="col-10 col-12-small">
+                    <h1>{{ page }}</h1>
+                </div>
+            </div>
+
+            {% comment %} <h1 class="iconed">
                 {% image page.icon height-256 as tmp_photo %}
                 <img src="{{ tmp_photo.url }}" alt="{{ tmp_photo.alt }}" id="header-icon"/>
                 {{ page }}
-            </h1>
+            </h1> {% endcomment %}
             {% if page.description %}
                 {{ page.description|make_markdown }}
             {% endif %}

@@ -11,7 +11,7 @@ from wagtail.admin.edit_handlers import FieldPanel, PageChooserPanel, InlinePane
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.contrib.settings.models import BaseSetting, register_setting
 
-from recipes.models import RecipePage, CaptionedImageBlock
+from recipes.models import RecipePage, CaptionedImageBlock, CategoryPage
 
 md_format_help = 'This text will be formatted with markdown.'
 DEFAULT_RICHTEXT_FEATURES = [
@@ -130,6 +130,21 @@ class GeneralSettings(BaseSetting):
         max_length=127,
         blank=True, null=True,
         help_text='Google Analytics Tracking ID')
+    random_recipe_category = models.ForeignKey(
+        CategoryPage,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='Which Category will random recipes be selected from')
+    random_recipe_icon = models.ForeignKey(
+        'images.CustomImage',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='This should be a square line-based icon in the right color'
+    )
 
     panels = [
         FieldPanel('site_name'),
@@ -142,6 +157,8 @@ class GeneralSettings(BaseSetting):
         FieldPanel('pagination_count'),
         FieldPanel('disqus'),
         FieldPanel('google_analytics_id'),
+        PageChooserPanel('random_recipe_category'),
+        ImageChooserPanel('random_recipe_icon'),
     ]
 
 

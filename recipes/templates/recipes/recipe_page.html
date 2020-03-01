@@ -38,12 +38,12 @@
 
         <hr/>
 
-        <div class="row 200%">
-            <div class="6u 12u$(medium)">
+        <div class="row">
+            <div class="col-6 col-12-medium">
                 <h2>Ingredients</h2>
                 {{ self.format_ingredients|make_markdown_altlist }}
             </div>
-            <div class="6u 12u$(medium)">
+            <div class="col-6 col-12-medium">
                 {% if self.source_name or self.source_url or self.prep_time or self.cook_time or self.total_time or self.recipe_yield %}
                     <div class="box">
                         {% if self.source_name or self.source_url %}
