@@ -1,3 +1,4 @@
+asgiref==3.2.3
 astroid==2.2.5
 autopep8==1.4.4
 beautifulsoup4==4.6.0
@@ -6,7 +7,7 @@ certifi==2019.11.28
 chardet==3.0.4
 dj-database-url==0.4.2
 dj-static==0.0.6
-Django==2.2.8
+Django==2.2.10
 django-appconf==1.0.2
 django-cogwheels==0.2
 django-compressor==2.2
@@ -21,6 +22,7 @@ gunicorn==19.7.1
 html5lib==1.0.1
 idna==2.8
 isort==4.3.21
+l18n==2018.5
 lazy-object-proxy==1.4.2
 libsass==0.13.2
 Markdown==2.6.9
@@ -41,7 +43,7 @@ static3==0.7.0
 typed-ast==1.4.0
 Unidecode==1.1.1
 urllib3==1.25.7
-wagtail==2.7
+wagtail==2.8
 wagtailmenus==2.13.1
 webencodings==0.5.1
 Willow==1.3
