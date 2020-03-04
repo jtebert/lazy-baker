@@ -2,9 +2,8 @@
 {% load wagtailimages_tags wagtailcore_tags %}
 {% load make_markdown %}
 
-{% block extra_css %}
-
-{% endblock %}
+{# Don't *also* show site name as suffix on home page #}
+{% block title_suffix %}{% endblock %}
 
 {% block content %}
 
