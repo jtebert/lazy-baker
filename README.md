@@ -12,7 +12,7 @@ Create virtual environment: `python3 -m venv venv`
 
 Activate virtual environment: `source venv/bin/activate`
 
-Install dependencies: `pip3 install -r requirements.txt`
+Install dependencies: `pip install -r requirements.txt`
 
 Create a `.env` or `settings.ini` file with the following:
 ```shell
@@ -39,7 +39,7 @@ DB_USER=XXXXXXXXXXX
 DB_PASSWORD=XXXXXXXXXX
 ```
 
-Create/update the database: `python3 manage.py migrate`
+Create/update the database: `python manage.py migrate`
 
 - If you get the error `role "USERNAME" does not exist`, create the user with `sudo -u postgres createuser USERNAME`
 - If you get the error `database "recipe_box_db" does not exist`, create it:
@@ -48,4 +48,4 @@ Create/update the database: `python3 manage.py migrate`
   - Get out: `exit`
 - If you want to copy the existing database from Heroku as a starting place, [follow these instructions](https://docs.juliaebert.com/programming/web#copy-heroku-database-locally-for-django-project)
 
-Run the server: `python3 manage.py runserver`
+Run the server: `python manage.py runserver`

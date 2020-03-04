@@ -3,6 +3,18 @@
 {% load make_markdown make_markdown_altlist duration %}
 {% load static from staticfiles %}
 
+{% block extra_head %}
+    {% image self.main_image fill-1920x768 as tmp_photo %}
+
+    <meta property="og:description" content="{{ page.intro }}">
+    <meta property="og:image" content="{{ tmp_photo.url }}">
+    {% comment %} <meta property="og:url" content="http://euro-travel-example.com/index.htm"> {% endcomment %}
+    <meta name="twitter:description" content="{{ page.intro }}">
+    <meta name="twitter:image" content="{{ tmp_photo.url }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image:alt" content="{{ tmp_photo.alt }}">
+{% endblock %}
+
 {% block content %}
 
     <section id="recipe">

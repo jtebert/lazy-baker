@@ -33,9 +33,18 @@
     <!--[if lte IE 9]><link rel="stylesheet" href="{% static 'css/ie9.css' %}" /><![endif]-->
     <!--[if lte IE 8]><link rel="stylesheet" href="{% static 'css/ie8.css' %}" /><![endif]-->
 
+    {# Global metadata for social media previews #}
+    <meta property="og:title" content="{% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}">
+    <meta name="twitter:title" content="{% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}">
+
+    {% block extra_head %}
+        {# Override this in templates to add extra stuff in the head, like metatags #}
+    {% endblock %}
+
     {% block extra_css %}
         {# Override this in templates to add extra stylesheets #}
     {% endblock %}
+
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
