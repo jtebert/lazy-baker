@@ -17,8 +17,8 @@ def make_markdown_altlist(value):
                   'markdown.extensions.tables',
                   'markdown.extensions.codehilite']
     x = markdown.markdown(force_text(value),
-                           extensions,
-                           safe_mode=True,
-                           enable_attributes=False)
+                          extensions,
+                          safe_mode=False,
+                          enable_attributes=False)
     x = x.replace('<ul>', '<ul class="alt">')
     return mark_safe(x)
