@@ -28,7 +28,7 @@ libsass==0.13.2
 Markdown==2.6.9
 mccabe==0.6.1
 olefile==0.44
-Pillow==6.2.1
+Pillow==9.0.0
 psycopg2==2.8.3
 pycodestyle==2.5.0
 pylint==2.3.1
