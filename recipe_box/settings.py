@@ -81,7 +81,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 
-    'wagtail.core.middleware.SiteMiddleware',
+    'wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
 
@@ -161,6 +161,8 @@ MEDIA_URL = '/media/'
 
 
 # Wagtail settings
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 WAGTAIL_SITE_NAME = "Reckless Ham"
 
