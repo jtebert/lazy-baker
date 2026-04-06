@@ -7,18 +7,12 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from modelcluster.fields import ParentalKey
 
-from wagtail.core.models import Page, Orderable
+from wagtail.models import Page, Orderable
 from wagtail.search import index
-from wagtail.core.fields import StreamField
-from wagtail.core import blocks
+from wagtail import blocks
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.images.edit_handlers import ImageChooserPanel
-from wagtail.admin.edit_handlers import (FieldPanel,
-                                                FieldRowPanel,
-                                                InlinePanel,
-                                                PageChooserPanel,
-                                                StreamFieldPanel)
+from wagtail.admin.panels import (FieldPanel, FieldRowPanel, InlinePanel, PageChooserPanel)
 from .utils import format_ingredient_line
 
 md_format_help = 'This text will be formatted with markdown.'
@@ -56,7 +50,7 @@ class CategoryPage(Page):
     )
 
     content_panels = Page.content_panels + [
-        ImageChooserPanel('icon'),
+        FieldPanel('icon'),
         FieldPanel('description'),
     ]
 
@@ -72,19 +66,15 @@ class CategoryPage(Page):
         ordering = ['title']
 
     def get_context(self, request, *args, **kwargs):
-        """
-        Add recipes to the context for recipe category listings
-        """
-        context = super(CategoryPage, self).get_context(
-            request, *args, **kwargs)
+        context = super(CategoryPage, self).get_context(request, *args, **kwargs)
         recipes = self.get_recipes()
 
-        # Pagination
         page = request.GET.get('page')
         page_size = 10
         from home.models import GeneralSettings
-        if GeneralSettings.for_site(request.site).pagination_count:
-            page_size = GeneralSettings.for_site(request.site).pagination_count
+        settings = GeneralSettings.for_request(request)
+        if settings.pagination_count:
+            page_size = settings.pagination_count
 
         if page_size is not None:
             paginator = Paginator(recipes, page_size)
@@ -99,11 +89,6 @@ class CategoryPage(Page):
         return context
 
     def get_recipes(self):
-        """
-        Return all recipes if no subject specified, otherwise only those from that Subject
-        :param subject_filter: Subject
-        :return: QuerySet of Recipes (I think)
-        """
         recipes = RecipePage.objects.live()
         recipes = recipes.filter(recipe_categories__category=self)
         recipes = recipes.order_by('title')
@@ -113,7 +98,6 @@ class CategoryPage(Page):
 class CategoryGroupPage(Page):
     """
     Categorization group (e.g., "meat" which has individual categories under it
-    Only categories are applied to recipes (not category groups), but recipes will show up under grouping
     """
     parent_page_types = ['CategoryIndexPage']
     subpage_types = [CategoryPage]
@@ -127,14 +111,11 @@ class CategoryGroupPage(Page):
     )
 
     content_panels = Page.content_panels + [
-        ImageChooserPanel('icon'),
+        FieldPanel('icon'),
     ]
 
     class Meta:
         verbose_name = "Category Group"
-
-    # TODO: Write function to list all categories
-    # TODO: Write funciton to list all recipes in category group
 
 
 class CategoryIndexPage(Page):
@@ -148,12 +129,7 @@ class CategoryIndexPage(Page):
         verbose_name = "Recipe Categories Index"
 
     def list_categories(self):
-        """
-        List ALL categories
-        :return:
-        """
         return CategoryPage.objects.all()
-        # TODO: Category listing ignores hierarchy
 
 
 class CategoryLink(Orderable):
@@ -171,8 +147,6 @@ class CategoryLink(Orderable):
 class RecipePage(Page):
     parent_page_types = ["RecipeIndexPage",]
     subpage_types = []
-
-    # TODO: nutrition info
 
     post_date = models.DateField(null=True)
 
@@ -201,7 +175,7 @@ class RecipePage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('post_date'),
-        ImageChooserPanel('main_image'),
+        FieldPanel('main_image'),
         InlinePanel('recipe_categories', label='Categories'),
 
         FieldPanel('intro'),
@@ -220,22 +194,13 @@ class RecipePage(Page):
         FieldPanel('ingredients'),
         FieldPanel('notes'),
         FieldPanel('instructions'),
-        #InlinePanel('instructions', label='Instructions'),
     ]
 
     def format_ingredients(self):
-        """
-        Format the ingredients field into Markdown, which can be formatted with make_markdown in the template
-        :return: String of Markdown-formatted ingredients
-        """
         lines = [format_ingredient_line(line) for line in self.ingredients.splitlines()]
         return '\n'.join(lines)
 
     def format_instructions(self):
-        """
-        Format the instructions string into a Markdown ordered list, which can be formatted with make_markdown in the template
-        :return:  String of Markdown-formatted instructions (ordered list)
-        """
         lines = self.instructions.splitlines()
         for ind, line in enumerate(lines):
             if len(line) > 0 and not line.isspace():
@@ -260,7 +225,6 @@ class RecipePage(Page):
 class RecipeIndexPage(Page):
     """
     Root page under which all recipe pages are made.
-    There should only be one of these, at the top level
     """
     subpage_types = ['RecipePage']
 
@@ -268,19 +232,15 @@ class RecipeIndexPage(Page):
         verbose_name = 'Recipes Index'
 
     def get_context(self, request, *args, **kwargs):
-        """
-        Add recipes to the context for recipe category listings
-        """
-        context = super(RecipeIndexPage, self).get_context(
-            request, *args, **kwargs)
+        context = super(RecipeIndexPage, self).get_context(request, *args, **kwargs)
         recipes = self.get_recipes()
 
-        # Pagination
         page = request.GET.get('page')
         page_size = 10
         from home.models import GeneralSettings
-        if GeneralSettings.for_site(request.site).pagination_count:
-            page_size = GeneralSettings.for_site(request.site).pagination_count
+        settings = GeneralSettings.for_request(request)
+        if settings.pagination_count:
+            page_size = settings.pagination_count
 
         if page_size is not None:
             paginator = Paginator(recipes, page_size)
@@ -295,11 +255,6 @@ class RecipeIndexPage(Page):
         return context
 
     def get_recipes(self):
-        """
-        Return all recipes if no subject specified, otherwise only those from that Subject
-        :param subject_filter: Subject
-        :return: QuerySet of Recipes (I think)
-        """
         recipes = RecipePage.objects.live()
         recipes = recipes.order_by('title')
         return recipes
