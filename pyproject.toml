@@ -5,8 +5,8 @@ requires-python = ">=3.12"
 
 dependencies = [
     # Core framework
-    "Django>=4.2,<5.0",
-    "wagtail>=5.2,<6.0",
+    "Django>=5.2,<6.0",
+    "wagtail>=7.0,<8.0",
     "wagtailmenus>=3.1.6",
 
     # Database
@@ -24,7 +24,7 @@ dependencies = [
 
     # Wagtail dependencies
     "django-modelcluster>=6.0",
-    "django-taggit>=2.0,<5.0",
+    "django-taggit>=5.0,<7.0",
     "django-treebeard>=4.7",
     "djangorestframework>=3.14,<4.0",
     "Willow",

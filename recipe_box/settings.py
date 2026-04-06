@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'wagtail.admin',
     'wagtail',
     'wagtail.contrib.settings',
+    'wagtail.contrib.search_promotions',
 
     'modelcluster',
     'taggit',
@@ -169,6 +170,10 @@ BASE_URL = 'http://recklessham.com'
 WAGTAILADMIN_BASE_URL = BASE_URL
 
 WAGTAILIMAGES_IMAGE_MODEL = 'images.CustomImage'
+
+# wagtailmenus 4.x defines content_panels/settings_panels on snippet models,
+# which Wagtail 7 warns about. Silence until wagtailmenus fixes upstream.
+SILENCED_SYSTEM_CHECKS = ['wagtailadmin.W002']
 
 
 # STATIC FILES ON AWS (production only)

@@ -4,48 +4,98 @@
 
 ---
 
-## Setup
+## Stack
 
-Install system dependencies: `sudo apt install libpq-dev python3-venv python3-pip postgresql postgresql-contrib`
+- **Python 3.12**, **Django 5.2**, **Wagtail 7**
+- **PostgreSQL 17** (via Docker)
+- **AWS S3** for static and media files in production
+- **Gunicorn** as the application server
+- **uv** for dependency management
 
-Create virtual environment: `python3 -m venv venv`
+## Local Development
 
-Activate virtual environment: `source venv/bin/activate`
+### Setup
 
-Install dependencies: `pip install -r requirements.txt`
+1. Copy the example env and fill in values:
 
-Create a `.env` or `settings.ini` file with the following:
 ```shell
-[settings]
+cp .env.example .env
+```
+
+Required variables:
+
+```shell
 DEBUG=True
 PRODUCTION=False
-SECRET_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-AWS_ACCESS_KEY_ID=XXXXXXXXXXXXXXXX
-AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-ALLOWED_HOSTS=*
-DB_NAME=recipe_box_db
+SECRET_KEY=<a-long-random-string>
+ALLOWED_HOSTS=localhost,127.0.0.1
+DB_NAME=lazy_baker
+DB_HOST=db
 ```
 
-- `DEBUG` (True or False) sets the Django debug variable. Do not use `DEBUG=True` in production.
-- `PROUDCTION` determines whether the production static/media content (AWS vs local) is used, and whether to use production database settings.
-- `SECRET_KEY` is the Django secret key
-- `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are the credentials for hosting static/media data on AWS S3
-- `ALLOWED_HOSTS` is the allowed host for the site to appear on. It shouldn't *really* be `*` (any host).
-- `DB_NAME` is the database name in Postgres.
+AWS credentials are only needed when `PRODUCTION=True`. Leave them out for local development.
 
-The following parameters are required if you are in a production setting (otherwise, they'll be ignored):
+2. Start the containers:
+
 ```shell
-DB_USER=XXXXXXXXXXX
-DB_PASSWORD=XXXXXXXXXX
+docker compose up
 ```
 
-Create/update the database: `python manage.py migrate`
+3. On first run (or after restoring a database dump), run migrations and populate the search index:
 
-- If you get the error `role "USERNAME" does not exist`, create the user with `sudo -u postgres createuser USERNAME`
-- If you get the error `database "recipe_box_db" does not exist`, create it:
-  - Run as postgres user: `sudo -i -u postgres`
-  - Create database: `createdb recipe_box_db`
-  - Get out: `exit`
-- If you want to copy the existing database from Heroku as a starting place, [follow these instructions](https://docs.juliaebert.com/programming/web#copy-heroku-database-locally-for-django-project)
+```shell
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py update_index
+```
 
-Run the server: `python manage.py runserver`
+4. Create a superuser to access the Wagtail admin:
+
+```shell
+docker compose exec web python manage.py createsuperuser
+```
+
+### Useful commands
+
+```shell
+# Run tests
+docker compose exec web python manage.py test
+
+# Open a Django shell
+docker compose exec web python manage.py shell
+
+# Rebuild containers after dependency changes
+docker compose build
+```
+
+### Admin URLs
+
+- Wagtail admin: http://localhost:8000/admin/
+- Django admin: http://localhost:8000/django-admin/
+
+## Production
+
+Set `PRODUCTION=True` in the environment. This enables:
+
+- Static and media files served from AWS S3
+- Database authentication via `DB_USER` / `DB_PASSWORD`
+- `SECURE_PROXY_SSL_HEADER` for HTTPS behind a proxy
+
+Additional env variables required in production:
+
+```shell
+PRODUCTION=True
+DEBUG=False
+DB_USER=...
+DB_PASSWORD=...
+AWS_STORAGE_BUCKET_NAME=...
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+```
+
+After deploying, run:
+
+```shell
+python manage.py migrate
+python manage.py update_index
+python manage.py collectstatic --noinput
+```
