@@ -68,6 +68,7 @@ jobs:
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml run --rm web python manage.py migrate --noinput
             docker compose -f docker-compose.prod.yml run --rm web python manage.py collectstatic --noinput
+            docker compose -f docker-compose.prod.yml run --rm web python manage.py generate_renditions
             docker compose -f docker-compose.prod.yml up -d
 
             # Health check — retry for up to 30 seconds
