@@ -3,6 +3,8 @@ from __future__ import absolute_import, unicode_literals
 from django.conf import settings
 from django.urls import include, re_path
 from django.contrib import admin
+from django.http import HttpRequest, HttpResponse
+from django.db import connection
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
@@ -10,7 +12,13 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from search import views as search_views
 
+def health(request: HttpRequest) -> HttpResponse:
+    connection.ensure_connection()
+    return HttpResponse("ok")
+
+
 urlpatterns = [
+    re_path(r'^health/$', health, name='health'),
     re_path(r'^django-admin/', admin.site.urls),
 
     re_path(r'^admin/', include(wagtailadmin_urls)),

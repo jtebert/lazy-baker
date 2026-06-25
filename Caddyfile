@@ -1,0 +1,3 @@
+recklessham.com, www.recklessham.com {
+    reverse_proxy web:8000
+}
