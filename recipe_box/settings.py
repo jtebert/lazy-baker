@@ -188,9 +188,12 @@ if PRODUCTION:
     AWS_QUERYSTRING_AUTH = False
 
     STATICFILES_LOCATION = 'static'
-    STATICFILES_STORAGE = 'custom_storages.StaticStorage'
-    STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION)
-
     MEDIAFILES_LOCATION = 'media'
+
+    STORAGES = {
+        "staticfiles": {"BACKEND": "custom_storages.StaticStorage"},
+        "default": {"BACKEND": "custom_storages.MediaStorage"},
+    }
+
+    STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION)
     MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
-    DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
