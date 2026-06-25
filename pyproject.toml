@@ -1,0 +1,43 @@
+[project]
+name = "lazy-baker"
+version = "0.1.0"
+requires-python = ">=3.12"
+
+dependencies = [
+    # Core framework
+    "Django>=5.2,<6.0",
+    "wagtail>=7.0,<8.0",
+    "wagtailmenus>=3.1.6",
+
+    # Database
+    "psycopg2>=2.9",
+
+    # Storage
+    "boto3>=1.35",
+    "django-storages>=1.14",
+
+    # Server
+    "gunicorn",
+
+    # Config
+    "python-decouple",
+
+    # Wagtail dependencies
+    "django-modelcluster>=6.0",
+    "django-taggit>=5.0,<7.0",
+    "django-treebeard>=4.7",
+    "djangorestframework>=3.14,<4.0",
+    "Willow",
+    "draftjs-exporter>=2.1.5,<3.0",
+
+    # App dependencies
+    "Pillow",
+    "beautifulsoup4",
+    "Unidecode",
+    "Markdown",
+    "l18n",
+    "libsass",
+    "django-compressor",
+    "rcssmin",
+    "rjsmin",
+]

@@ -54,3 +54,73 @@ article h3 a {
 div.instructions ol li {
     margin-bottom: 1em;
 }
+
+/* Search page form: full-width flex row, button fixed, input fills remainder */
+.search-page-form {
+    display: flex;
+    gap: 1em;
+}
+
+.search-page-form input[type="text"] {
+    flex: 1;
+    min-width: 0;
+}
+
+.search-page-form button[type="submit"] {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+@media screen and (max-width: 736px) {
+    .search-page-form {
+        flex-direction: column;
+    }
+
+    .search-page-form button[type="submit"] {
+        width: 100%;
+    }
+}
+
+/* Hide the non-interactive form:before icon */
+#search form:before {
+    display: none !important;
+}
+
+/* Submit button: font-size establishes the em context to match the original */
+#search form .search-submit {
+    background: none;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    display: block;
+    font-size: 1.5em;
+    height: 2em;
+    outline: none;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 2em;
+}
+
+/* Icon on the button's ::before — no font-size override, inherits 1.5em from button */
+#search form .search-submit:before {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    text-transform: none;
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    color: #f56a6a;
+    content: '\f002';
+    display: block;
+    line-height: 2em;
+    text-align: center;
+}

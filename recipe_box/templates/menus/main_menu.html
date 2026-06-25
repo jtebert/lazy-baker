@@ -10,6 +10,7 @@
 
             <form action="{% url 'search' %}" method="get">
                 <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %} placeholder="Search">
+                <button type="submit" class="search-submit" aria-label="Search"></button>
             </form>
         </section>
 

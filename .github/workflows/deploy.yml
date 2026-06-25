@@ -1,0 +1,93 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/lazy-baker
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+
+      - name: Copy config files to Droplet
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: root
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          source: docker-compose.prod.yml,Caddyfile
+          target: /opt/reckless-ham/
+
+      - name: Deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: root
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            set -e
+            cd /opt/reckless-ham
+
+            # Back up current image tag for rollback
+            PREV_SHA=$(docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/${{ github.repository_owner }}/lazy-baker:latest 2>/dev/null || echo "")
+
+            # Snapshot the database before any changes
+            mkdir -p /opt/reckless-ham/backups
+            docker compose -f docker-compose.prod.yml exec -T db \
+              pg_dump -U $DB_USER $DB_NAME \
+              > /opt/reckless-ham/backups/pre-deploy-${{ github.sha }}.sql || true
+
+            # Keep only the last 5 backups
+            ls -t /opt/reckless-ham/backups/pre-deploy-*.sql 2>/dev/null | tail -n +6 | xargs rm -f || true
+
+            # Pull new image and deploy
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml run --rm web python manage.py migrate --noinput
+            docker compose -f docker-compose.prod.yml run --rm web python manage.py collectstatic --noinput
+            docker compose -f docker-compose.prod.yml run --rm web python manage.py generate_renditions
+            docker compose -f docker-compose.prod.yml up -d
+
+            # Health check — retry for up to 30 seconds
+            echo "Running health check..."
+            for i in $(seq 1 6); do
+              sleep 5
+              if curl -fsS http://localhost/health/ > /dev/null 2>&1; then
+                echo "Health check passed."
+                docker image prune -f
+                exit 0
+              fi
+              echo "Attempt $i failed, retrying..."
+            done
+
+            # Health check failed — roll back
+            echo "Health check failed. Rolling back..."
+            if [ -n "$PREV_SHA" ]; then
+              docker compose -f docker-compose.prod.yml stop web
+              docker tag "$PREV_SHA" ghcr.io/${{ github.repository_owner }}/lazy-baker:latest
+              docker compose -f docker-compose.prod.yml up -d web
+            fi
+            exit 1

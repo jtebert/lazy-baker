@@ -4,12 +4,11 @@ from modelcluster.fields import ParentalKey
 
 from django.db import models
 
-from wagtail.core import blocks
-from wagtail.core.models import Page, Orderable
-from wagtail.core.fields import StreamField
-from wagtail.admin.edit_handlers import FieldPanel, PageChooserPanel, InlinePanel, StreamFieldPanel
-from wagtail.images.edit_handlers import ImageChooserPanel
-from wagtail.contrib.settings.models import BaseSetting, register_setting
+from wagtail import blocks
+from wagtail.models import Page, Orderable
+from wagtail.fields import StreamField
+from wagtail.admin.panels import FieldPanel, PageChooserPanel, InlinePanel
+from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 
 from recipes.models import RecipePage, CaptionedImageBlock, CategoryPage
 
@@ -46,7 +45,7 @@ class HomePage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('body', classname="full"),
-        ImageChooserPanel('logo'),
+        FieldPanel('logo'),
         PageChooserPanel('featured_recipe'),
     ]
 
@@ -54,13 +53,8 @@ class HomePage(Page):
         verbose_name = "Homepage"
 
     def get_context(self, request, *args, **kwargs):
-        """
-        Add recipes to the context for recipe category listings
-        """
-        context = super(HomePage, self).get_context(
-            request, *args, **kwargs)
+        context = super(HomePage, self).get_context(request, *args, **kwargs)
         recent_recipes = RecipePage.objects.live().order_by('-post_date')[:self.num_recent_recipes]
-
         context['recent_recipes'] = recent_recipes
         return context
 
@@ -76,15 +70,15 @@ class AboutPage(Page):
     body = StreamField([
         ('text', blocks.RichTextBlock(features=DEFAULT_RICHTEXT_FEATURES)),
         ('captioned_image', CaptionedImageBlock())
-    ])
+    ], use_json_field=True)
 
     content_panels = Page.content_panels + [
-        StreamFieldPanel('body'),
+        FieldPanel('body'),
     ]
 
 
 @register_setting
-class GeneralSettings(BaseSetting):
+class GeneralSettings(BaseSiteSetting):
     site_name = models.CharField(
         max_length=127,
         help_text='Website name')
@@ -149,27 +143,24 @@ class GeneralSettings(BaseSetting):
     panels = [
         FieldPanel('site_name'),
         FieldPanel('site_author'),
-        ImageChooserPanel('site_icon'),
+        FieldPanel('site_icon'),
         FieldPanel('site_tagline'),
         FieldPanel('site_description'),
         FieldPanel('contact_email'),
-        ImageChooserPanel('recipe_icon'),
+        FieldPanel('recipe_icon'),
         FieldPanel('pagination_count'),
         FieldPanel('disqus'),
         FieldPanel('google_analytics_id'),
         PageChooserPanel('random_recipe_category'),
-        ImageChooserPanel('random_recipe_icon'),
+        FieldPanel('random_recipe_icon'),
     ]
 
 
 @register_setting(icon='group')
-class SocialMediaSettings(BaseSetting):
+class SocialMediaSettings(BaseSiteSetting):
     twitter_username = models.CharField(max_length=127, blank=True)
     github_username = models.CharField(max_length=127, blank=True)
-    #facebook_url = models.CharField(max_length=127, blank=True, help_text='This is the part after the / on the address of your profile')
-    #snapchat_username = models.CharField(max_length=127, blank=True)
     instagram_username = models.CharField(max_length=127, blank=True)
-    #medium_username = models.CharField(max_length=127, blank=True)
     linkedin_url = models.CharField(max_length=127, blank=True,
                                     help_text='This is the part after the /in/ on the address of your profile')
 

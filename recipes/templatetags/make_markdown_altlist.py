@@ -2,7 +2,7 @@ import markdown
 
 from django import template
 from django.template.defaultfilters import stringfilter
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.safestring import mark_safe
 
 register = template.Library()
@@ -16,9 +16,6 @@ def make_markdown_altlist(value):
                   'markdown.extensions.fenced_code',
                   'markdown.extensions.tables',
                   'markdown.extensions.codehilite']
-    x = markdown.markdown(force_text(value),
-                          extensions,
-                          safe_mode=False,
-                          enable_attributes=False)
+    x = markdown.markdown(force_str(value), extensions=extensions)
     x = x.replace('<ul>', '<ul class="alt">')
     return mark_safe(x)

@@ -8,6 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('home', '0015_generalsettings_random_recipe_category'),
+        ('recipes', '0019_auto_20200106_1816'),
     ]
 
     operations = [

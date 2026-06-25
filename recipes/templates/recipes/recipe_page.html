@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load wagtailimages_tags %}
 {% load make_markdown make_markdown_altlist duration %}
-{% load static from staticfiles %}
+{% load static %}
 
 {% block extra_head %}
     {% image self.main_image fill-1920x768 as tmp_photo %}
