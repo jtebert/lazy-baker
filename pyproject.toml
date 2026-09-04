@@ -36,8 +36,4 @@ dependencies = [
     "Unidecode",
     "Markdown",
     "l18n",
-    "libsass",
-    "django-compressor",
-    "rcssmin",
-    "rjsmin",
 ]

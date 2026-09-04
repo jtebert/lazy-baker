@@ -4,13 +4,15 @@ A Wagtail-powered recipe website ("Reckless Ham") running on Django + PostgreSQL
 
 ## Stack
 
-- **Python:** 3.7.3 (target: 3.12)
-- **Django:** 2.2.10 (target: 4.2 LTS)
-- **Wagtail:** 2.8 (target: 5.2 LTS)
-- **Database:** PostgreSQL
-- **Storage:** AWS S3 (static + media via `custom_storages.py`)
+- **Python:** 3.12
+- **Django:** 5.2
+- **Wagtail:** 7.x
+- **Database:** PostgreSQL 17 (via Docker)
+- **Storage:** AWS S3 (static + media via `custom_storages.py`, using `django-storages`' `S3Boto3Storage`)
 - **Web server:** Gunicorn
-- **Config:** `python-decouple` reads from `.env` or `settings.ini`
+- **Dependency management:** `uv` (deps declared in `pyproject.toml`)
+- **Config:** `python-decouple` reads from `.env`
+- **Reverse proxy (production):** Caddy
 
 ## Project Layout
 
@@ -22,11 +24,15 @@ images/          Custom Wagtail image model (CustomImage)
 search/          Search and random recipe views
 assets/          SCSS source files
 custom_storages.py  S3 storage backends (StaticStorage, MediaStorage)
+Dockerfile           App image (python:3.12-slim + uv)
+docker-compose.yml   Local dev (web + db)
+docker-compose.prod.yml  Production (web + db + caddy)
+Caddyfile            Production reverse proxy config
 ```
 
 ## Environment Variables
 
-Required in `.env` or `settings.ini`:
+Required in `.env` (see `.env.example`):
 
 ```
 DEBUG=True
@@ -34,45 +40,37 @@ PRODUCTION=False
 SECRET_KEY=...
 ALLOWED_HOSTS=localhost,127.0.0.1
 DB_NAME=lazy_baker
-AWS_STORAGE_BUCKET_NAME=...
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
+DB_HOST=db
 
 # Production only:
 DB_USER=...
 DB_PASSWORD=...
+AWS_STORAGE_BUCKET_NAME=...
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
 ```
 
 ## Key Settings Behavior
 
 - `PRODUCTION=False` → local DB (no user/password), static files served locally
-- `PRODUCTION=True` → DB with user/password, static/media served from S3
+- `PRODUCTION=True` → DB with user/password, static/media served from S3, `SECURE_PROXY_SSL_HEADER` enabled for HTTPS behind Caddy
 - Media files always point to S3 (`DEFAULT_FILE_STORAGE` is always S3-backed)
 
-## Running Locally (current, pre-Docker)
+## Running Locally
 
 ```bash
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
+cp .env.example .env   # fill in values
+docker compose up
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py update_index
+docker compose exec web python manage.py createsuperuser
 ```
 
-## Upgrade Plan (in progress)
+See `Makefile` for shortcuts (`make up`, `make migrate`, `make shell`, `make logs`) and `README.md` for full local dev / production instructions.
 
-See project conversation for the full phased plan. Broad steps:
+## Deployment
 
-1. **Containerize** at current versions (Python 3.7, Django 2.2, Wagtail 2.8)
-2. **Update S3 layer** — replace `boto` with `boto3`, update `django-storages`, rewrite `custom_storages.py`
-3. **Step through Django + Wagtail LTS versions** — 2.8→2.16→3.0→5.2, Django 2.2→3.2→4.2
-4. **Update Python** to 3.12 (via Docker base image change)
-5. **Deploy** updated container to Digital Ocean
-
-### Breaking changes to handle:
-- Wagtail 3.0: `wagtail.core` → `wagtail`; `SiteMiddleware` removed
-- Django 3.x: `url()` → `path()`/`re_path()`; `ugettext_lazy` → `gettext_lazy`
-- S3: `S3BotoStorage` → `S3Boto3Storage`
-- `dj-static`, `static3` — Heroku-era, remove when containerized
-- `libsass`, `django-compressor` — may need replacement (libsass unmaintained)
+Push to `main` triggers `.github/workflows/deploy.yml`: builds and pushes the image to GHCR, copies `docker-compose.prod.yml` + `Caddyfile` to the Digital Ocean droplet, runs migrations/collectstatic/renditions/search-index update, health-checks `/health/`, and rolls back to the previous image on failure. A pre-deploy DB backup is taken automatically (last 5 kept).
 
 ## Wagtail Admin
 
